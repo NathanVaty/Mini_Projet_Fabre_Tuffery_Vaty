@@ -21,15 +21,24 @@ import javax.sql.DataSource;
  * @author Nathan Vaty
  */
 public class DAOadmin {
-    
+
+    /**
+     * Constructeur du DAOadmin
+     */
     protected final DataSource myDataSource;
     
     public DAOadmin(DataSource dataSource) {
         this.myDataSource = dataSource;
     }
     
-    public HashMap<String,Double> caCategorieArticle(Date dateDeb,Date dateFin) throws Exception {
-        HashMap<String,Double> chiffreAff = new HashMap<>();
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @param dateDeb
+     * @param dateFin
+     * @return 
+     */
+    public HashMap<String,Double> CAofCategorie(String productCode, Date dateDeb, Date dateFin) {
+       HashMap<String,Double> chiffreAff = new HashMap<>();
         List<String> codes = new LinkedList<>();
         String rqtPC = "SELECT prod_code FROM product_code";
         try (   Connection connection = myDataSource.getConnection();
@@ -44,7 +53,52 @@ public class DAOadmin {
         }
         return chiffreAff;
     }
+
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @return 
+     */
+    public HashMap<String,Double> CAofZoneGeo(String zipCode, Date datedeb, Date dateFin) {
+        HashMap<String,Double> chiffreAff = new HashMap<>();
+        return chiffreAff;
+    }
+
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @return 
+     */
+    public HashMap<String,Double> CAfromClient(int codeClient, Date dateDeb,Date dateFin) {
+       HashMap<String,Double> chiffreAff = new HashMap<>();
+       return chiffreAff;
+    }
+
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @return 
+     */
+    public int insertProduct() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @return 
+     */
+    public int updateProduct() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * TODO modifier type retour+param ==> fichier de test aussi
+     * @return 
+     */
+    public int deleteProduct() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
+
+
 
 
 

@@ -5,11 +5,20 @@
  */
 package modele;
 
+import javax.sql.DataSource;
+
 /**
  *
  * @author vanat
  */
 public class DAOclient {
+
+    /**
+     * Constructeur du DAOclient
+     */
+    public DAOclient(DataSource myDataSource) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
 
