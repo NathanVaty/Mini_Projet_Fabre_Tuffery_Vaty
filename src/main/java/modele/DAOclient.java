@@ -11,6 +11,13 @@ import javax.sql.DataSource;
  * @author Morgane Tuffery
  */
 public class DAOclient {
+
+    /**
+     * Constructeur du DAOclient
+     */
+    public DAOclient(DataSource myDataSource) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     protected final DataSource myDataSource;
     
