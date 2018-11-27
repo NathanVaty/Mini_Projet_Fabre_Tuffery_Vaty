@@ -9,7 +9,7 @@ package modele;
  *
  * @author vanat
  */
-public class DAO {
+public class DAOclient {
     
 }
 
