@@ -37,37 +37,47 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofCategorie(String productCode, Date dateDeb, Date dateFin) {
+    public HashMap<String,Double> CAofCategorie(Date dateDeb, Date dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-        List<String> codes = new LinkedList<>();
-        String rqtPC = "SELECT prod_code FROM product_code";
+        String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
+                        "FROM PRODUCT_CODE PC\n" +
+                        "JOIN PRODUCT P ON P.PRODUCT_CODE = PC.PROD_CODE\n" +
+                        "JOIN PURCHASE_ORDER PO ON PO.PRODUCT_ID = P.PRODUCT_ID\n" +
+                        "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
+                        "GROUP BY PC.PROD_CODE;";
         try (   Connection connection = myDataSource.getConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(rqtPC)) {
                 while(rs.next()) {
-                    
+                    String pc = rs.getString("PROD_CODE");
+                    double dc = rs.getDouble("CA");
+                    chiffreAff.put(pc, dc);
                 }
             
         } catch(SQLException e) {
-            
         }
+         
         return chiffreAff;
     }
 
     /**
      * TODO modifier type retour+param ==> fichier de test aussi
+     * @param datedeb
+     * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofZoneGeo(String zipCode, Date datedeb, Date dateFin) {
+    public HashMap<String,Double> CAofZoneGeo(Date datedeb, Date dateFin) {
         HashMap<String,Double> chiffreAff = new HashMap<>();
         return chiffreAff;
     }
 
     /**
      * TODO modifier type retour+param ==> fichier de test aussi
+     * @param dateDeb
+     * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAfromClient(int codeClient, Date dateDeb,Date dateFin) {
+    public HashMap<String,Double> CAfromClient(Date dateDeb,Date dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
        return chiffreAff;
     }
@@ -97,6 +107,12 @@ public class DAOadmin {
     }
 
 }
+
+
+
+
+
+
 
 
 
