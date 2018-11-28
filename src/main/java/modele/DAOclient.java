@@ -15,15 +15,12 @@ public class DAOclient {
     /**
      * Constructeur du DAOclient
      */
-    public DAOclient(DataSource myDataSource) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    protected final DataSource myDataSource;
-    
     public DAOclient(DataSource dataSource){
         this.myDataSource = dataSource;
     }
+    
+    
+    protected final DataSource myDataSource;
     
     /**
      * Fonction permettant aux clients de modifier ses données personnelles.
@@ -82,4 +79,5 @@ public class DAOclient {
     
             
 }
+
 
