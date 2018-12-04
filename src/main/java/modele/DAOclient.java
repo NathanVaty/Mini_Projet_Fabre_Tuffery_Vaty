@@ -42,6 +42,31 @@ public class DAOclient {
                                   String addressLine2,String city, String state,
                                   String phone, String fax, String email){
         
+         String sql = "UPDATE CUSTOMER SET ZIP = ?, NAME = ?, ADDRESSLINE1 = ?, ADDRESSLINE2 = ?, CITY = ? , STATE = ?, PHONE = ?, FAX = ?, EMAIL = ? "
+                   + " WHERE CUSTOMER_ID = ? ";
+         
+          try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+              
+             discountStatement.setString(1, zip);
+             discountStatement.setString(2, name);
+             discountStatement.setString(3, addressLine1);
+             discountStatement.setString(4, addressLine2);
+             discountStatement.setString(5, city);
+             discountStatement.setString(6, state);
+             discountStatement.setString(7, phone);
+             discountStatement.setString(8, fax);
+             discountStatement.setString(9, email);
+             discountStatement.setInt(10, customerId);
+              
+            
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+              
+          } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
+        
     }
     
     /**
