@@ -7,6 +7,7 @@ package modele;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,11 +42,37 @@ public class DAOclient {
                                   String addressLine2,String city, String state,
                                   String phone, String fax, String email){
         
+         String sql = "UPDATE CUSTOMER SET ZIP = ?, NAME = ?, ADDRESSLINE1 = ?, ADDRESSLINE2 = ?, CITY = ? , STATE = ?, PHONE = ?, FAX = ?, EMAIL = ? "
+                   + " WHERE CUSTOMER_ID = ? ";
+         
+          try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+              
+             discountStatement.setString(1, zip);
+             discountStatement.setString(2, name);
+             discountStatement.setString(3, addressLine1);
+             discountStatement.setString(4, addressLine2);
+             discountStatement.setString(5, city);
+             discountStatement.setString(6, state);
+             discountStatement.setString(7, phone);
+             discountStatement.setString(8, fax);
+             discountStatement.setString(9, email);
+             discountStatement.setInt(10, customerId);
+              
+            
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+              
+          } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
+        
     }
     
     /**
      * Fonction permettant au client d'ajouter un bon de commande
      * @param customerId
+     * @param productId
      * @param quantite
      * @param shippingCost
      * @param salesDate
@@ -55,12 +82,19 @@ public class DAOclient {
     public void addPurchaseOrder(int customerId ,int productId,int quantite, float shippingCost, String salesDate,
                                  String shippingDate, String freightCompany){
         
-        String sql = "INSERT INTO DISCOUNT_CODE(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PURCHASE_ORDER(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
                  PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
              // On définit la valeur de paramètre
-             //A voir pour ajouter automatiquement l'orderNum
-             discountStatement.setString(1, discountCode);
+            
+             //Génération automatique du prochain ordeNum
+             int orderNum = 0; //Numero du prochain orderNum
+             ResultSet clefs = discountStatement.getGeneratedKeys();
+             while(clefs.next()){
+                orderNum = clefs.getInt(1);
+             }
+             
+             discountStatement.setInt(1, orderNum);
              discountStatement.setInt(2, customerId);
              discountStatement.setInt(3, productId);
              discountStatement.setInt(4, quantite);
@@ -80,15 +114,39 @@ public class DAOclient {
     
     /**
      * Fonction permettant aux clients de changer leurs bons de commande
+     * @param orderNum
      * @param customerId
+     * @param productId
      * @param quantite
      * @param shippingCost
      * @param salesDate
      * @param shippingDate
      * @param freightCompany 
      */
-    public void editPurchaseOrder(int customerId ,int quantite, float shippingCost, String salesDate,
+    public void editPurchaseOrder(int orderNum, int customerId ,int productId,int quantite, float shippingCost, String salesDate,
                                  String shippingDate, String freightCompany){
+        
+        String sql = "UPDATE PURCHASE_ORDER SET CUSTOMER_ID = ? , PRODUCT_ID = ? , QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ? "
+                   + " WHERE ORDER_NUM = ?"
+                  ;
+         try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+
+             discountStatement.setInt(1, customerId);
+             discountStatement.setInt(2, productId);
+             discountStatement.setInt(3, quantite);
+             discountStatement.setFloat(4, shippingCost);
+             discountStatement.setString(5, salesDate);
+             discountStatement.setString(6, shippingDate);
+             discountStatement.setString(7, freightCompany);
+             discountStatement.setInt(8, orderNum);
+             
+             
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+         } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
         
     }
     
