@@ -9,12 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 /**
@@ -136,10 +133,45 @@ public class DAOadmin {
 
     /**
      * TODO modifier type retour+param ==> fichier de test aussi
+     * @param manufactID
+     * @param prodCode
+     * @param prod_cost
+     * @param quantite
+     * @param markup
+     * @param dispo
+     * @param desc
      * @return 
      */
-    public int insertProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void insertProduct(int manufactID,int prodCode, double prodCost,
+                    int quantite, double markup, boolean dispo, String desc) {
+        String sql = "INSERT INTO PRODUCT "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+         try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+             // On définit la valeur de paramètre
+            
+             //Génération automatique du prochain ordeNum
+             int orderNum = 0; //Numero du prochain orderNum
+             ResultSet clefs = discountStatement.getGeneratedKeys();
+             while(clefs.next()){
+                orderNum = clefs.getInt(1);
+             }
+             
+             discountStatement.setInt(1, orderNum);
+             discountStatement.setInt(2, manufactID);
+             discountStatement.setInt(3, prodCode);
+             discountStatement.setDouble(4, prodCost);
+             discountStatement.setInt(5, quantite);
+             discountStatement.setDouble(6, markup);
+             discountStatement.setBoolean(7, dispo);
+             discountStatement.setString(8, desc);
+             
+             
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+         } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
     }
     
     /**
@@ -158,6 +190,7 @@ public class DAOadmin {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
+
 
 
 
