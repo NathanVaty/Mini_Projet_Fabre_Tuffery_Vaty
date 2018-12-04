@@ -47,6 +47,7 @@ public class DAOclient {
     /**
      * Fonction permettant au client d'ajouter un bon de commande
      * @param customerId
+     * @param productId
      * @param quantite
      * @param shippingCost
      * @param salesDate
@@ -88,15 +89,39 @@ public class DAOclient {
     
     /**
      * Fonction permettant aux clients de changer leurs bons de commande
+     * @param orderNum
      * @param customerId
+     * @param productId
      * @param quantite
      * @param shippingCost
      * @param salesDate
      * @param shippingDate
      * @param freightCompany 
      */
-    public void editPurchaseOrder(int customerId ,int quantite, float shippingCost, String salesDate,
+    public void editPurchaseOrder(int orderNum, int customerId ,int productId,int quantite, float shippingCost, String salesDate,
                                  String shippingDate, String freightCompany){
+        
+        String sql = "UPDATE PURCHASE_ORDER SET CUSTOMER_ID = ? , PRODUCT_ID = ? , QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ? "
+                   + " WHERE ORDER_NUM = ?"
+                  ;
+         try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+
+             discountStatement.setInt(1, customerId);
+             discountStatement.setInt(2, productId);
+             discountStatement.setInt(3, quantite);
+             discountStatement.setFloat(4, shippingCost);
+             discountStatement.setString(5, salesDate);
+             discountStatement.setString(6, shippingDate);
+             discountStatement.setString(7, freightCompany);
+             discountStatement.setInt(8, orderNum);
+             
+             
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+         } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
         
     }
     
