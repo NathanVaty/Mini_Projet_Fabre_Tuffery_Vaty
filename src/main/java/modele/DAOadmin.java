@@ -32,7 +32,8 @@ public class DAOadmin {
     }
     
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
+     * Renvoie le chiffre d'affaire par catégorie d'article
+     * entre 2 dates données
      * @param dateDeb
      * @param dateFin
      * @return 
@@ -61,13 +62,34 @@ public class DAOadmin {
     }
 
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
+     * Renvoie le chiffre d'affaire par zone géographique
+     * entre 2 dates données
      * @param datedeb
      * @param dateFin
      * @return 
      */
     public HashMap<String,Double> CAofZoneGeo(Date datedeb, Date dateFin) {
-        HashMap<String,Double> chiffreAff = new HashMap<>();
+       HashMap<String,Double> chiffreAff = new HashMap<>();
+        String rqtPC = "SELECT MK.ZIP_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
+                        "FROM MICRO_MARKET MK\n" +
+                        "JOIN CUSTOMER C ON C.ZIP = MK.ZIP_CODE\n" +
+                        "JOIN PURCHASE_ORDER PO ON PO.CUSTOMER_ID = C.CUSTOMER_ID\n" +
+                        "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID\n" +
+                        "JOIN PRODUCT_CODE PC ON PC.PROD_CODE = P.PRODUCT_CODE\n" +
+                        "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
+                        "GROUP BY MK.ZIP_CODE;\n";
+        try (   Connection connection = myDataSource.getConnection();
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(rqtPC)) {
+                while(rs.next()) {
+                    String pc = rs.getString("ZIP_CODE");
+                    double dc = rs.getDouble("CA");
+                    chiffreAff.put(pc, dc);
+                }
+            
+        } catch(SQLException e) {
+        }
+         
         return chiffreAff;
     }
 
@@ -79,7 +101,26 @@ public class DAOadmin {
      */
     public HashMap<String,Double> CAfromClient(Date dateDeb,Date dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-       return chiffreAff;
+        String rqtPC = "SELECT C.CUSTOMER_ID, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
+                        "FROM CUSTOMER C\n" +
+                        "JOIN PURCHASE_ORDER PO ON PO.CUSTOMER_ID = C.CUSTOMER_ID\n" +
+                        "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID\n" +
+                        "JOIN PRODUCT_CODE PC ON PC.PROD_CODE = P.PRODUCT_CODE\n" +
+                        "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
+                        "GROUP BY C.CUSTOMER_ID;";
+        try (   Connection connection = myDataSource.getConnection();
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(rqtPC)) {
+                while(rs.next()) {
+                    String pc = rs.getString("CUSTOMER_ID");
+                    double dc = rs.getDouble("CA");
+                    chiffreAff.put(pc, dc);
+                }
+            
+        } catch(SQLException e) {
+        }
+         
+        return chiffreAff;
     }
 
     /**
@@ -107,6 +148,16 @@ public class DAOadmin {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
