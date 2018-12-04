@@ -6,6 +6,7 @@
 package modele;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -38,24 +39,28 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofCategorie(Date dateDeb, Date dateFin) {
+    public HashMap<String,Double> CAofCategorie(String dateDeb, String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-        String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
-                        "FROM PRODUCT_CODE PC\n" +
-                        "JOIN PRODUCT P ON P.PRODUCT_CODE = PC.PROD_CODE\n" +
-                        "JOIN PURCHASE_ORDER PO ON PO.PRODUCT_ID = P.PRODUCT_ID\n" +
-                        "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
-                        "GROUP BY PC.PROD_CODE;";
+        String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA " +
+                        "FROM PRODUCT_CODE PC " +
+                        "JOIN PRODUCT P ON P.PRODUCT_CODE = PC.PROD_CODE " +
+                        "JOIN PURCHASE_ORDER PO ON PO.PRODUCT_ID = P.PRODUCT_ID " +
+                        "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE " +
+                        "WHERE PO.SALES_DATE BETWEEN ? AND ? " + 
+                        "GROUP BY PC.PROD_CODE";
         try (   Connection connection = myDataSource.getConnection();
-                Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery(rqtPC)) {
+                PreparedStatement stmt = connection.prepareStatement(rqtPC)) {
+                stmt.setString(1, dateDeb);
+                stmt.setString(2,dateFin);
+                ResultSet rs = stmt.executeQuery(); 
                 while(rs.next()) {
                     String pc = rs.getString("PROD_CODE");
                     double dc = rs.getDouble("CA");
                     chiffreAff.put(pc, dc);
                 }
-            
+                System.out.println("apres while");            
         } catch(SQLException e) {
+            System.out.println(e.getMessage());
         }
          
         return chiffreAff;
@@ -64,11 +69,11 @@ public class DAOadmin {
     /**
      * Renvoie le chiffre d'affaire par zone géographique
      * entre 2 dates données
-     * @param datedeb
+     * @param dateDeb
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofZoneGeo(Date datedeb, Date dateFin) {
+    public HashMap<String,Double> CAofZoneGeo(String dateDeb, String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
         String rqtPC = "SELECT MK.ZIP_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
                         "FROM MICRO_MARKET MK\n" +
@@ -77,10 +82,13 @@ public class DAOadmin {
                         "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID\n" +
                         "JOIN PRODUCT_CODE PC ON PC.PROD_CODE = P.PRODUCT_CODE\n" +
                         "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
-                        "GROUP BY MK.ZIP_CODE;\n";
-        try (   Connection connection = myDataSource.getConnection();
-                Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery(rqtPC)) {
+                        "WHERE PO.SALES_DATE BETWEEN ? AND ? \n" +
+                        "GROUP BY MK.ZIP_CODE\n";
+       try (   Connection connection = myDataSource.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(rqtPC)) {
+                stmt.setString(1, dateDeb);
+                stmt.setString(2,dateFin);
+                ResultSet rs = stmt.executeQuery();
                 while(rs.next()) {
                     String pc = rs.getString("ZIP_CODE");
                     double dc = rs.getDouble("CA");
@@ -99,7 +107,7 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAfromClient(Date dateDeb,Date dateFin) {
+    public HashMap<String,Double> CAfromClient(String dateDeb,String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
         String rqtPC = "SELECT C.CUSTOMER_ID, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
                         "FROM CUSTOMER C\n" +
@@ -107,10 +115,13 @@ public class DAOadmin {
                         "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID\n" +
                         "JOIN PRODUCT_CODE PC ON PC.PROD_CODE = P.PRODUCT_CODE\n" +
                         "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE\n" +
-                        "GROUP BY C.CUSTOMER_ID;";
+                        "WHERE PO.SALES_DATE BETWEEN ? AND ? \n" +
+                        "GROUP BY C.CUSTOMER_ID";
         try (   Connection connection = myDataSource.getConnection();
-                Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery(rqtPC)) {
+                PreparedStatement stmt = connection.prepareStatement(rqtPC)) {
+                stmt.setString(1, dateDeb);
+                stmt.setString(2,dateFin);
+                ResultSet rs = stmt.executeQuery();
                 while(rs.next()) {
                     String pc = rs.getString("CUSTOMER_ID");
                     double dc = rs.getDouble("CA");
@@ -146,8 +157,32 @@ public class DAOadmin {
     public int deleteProduct() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
