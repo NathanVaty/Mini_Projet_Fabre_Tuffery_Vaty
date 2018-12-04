@@ -7,6 +7,7 @@ package modele;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,12 +56,19 @@ public class DAOclient {
     public void addPurchaseOrder(int customerId ,int productId,int quantite, float shippingCost, String salesDate,
                                  String shippingDate, String freightCompany){
         
-        String sql = "INSERT INTO DISCOUNT_CODE(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PURCHASE_ORDER(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
                  PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
              // On définit la valeur de paramètre
-             //A voir pour ajouter automatiquement l'orderNum
-             discountStatement.setString(1, discountCode);
+            
+             //Génération automatique du prochain ordeNum
+             int orderNum = 0; //Numero du prochain orderNum
+             ResultSet clefs = discountStatement.getGeneratedKeys();
+             while(clefs.next()){
+                orderNum = clefs.getInt(1);
+             }
+             
+             discountStatement.setInt(1, orderNum);
              discountStatement.setInt(2, customerId);
              discountStatement.setInt(3, productId);
              discountStatement.setInt(4, quantite);
