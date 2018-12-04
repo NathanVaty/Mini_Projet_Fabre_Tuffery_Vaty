@@ -64,6 +64,7 @@ public class DAOclient {
              discountStatement.execute();
               
           } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -107,6 +108,7 @@ public class DAOclient {
              // On ajoute le code discount avec une requete
              discountStatement.execute();
          } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -145,6 +147,7 @@ public class DAOclient {
              // On ajoute le code discount avec une requete
              discountStatement.execute();
          } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -168,7 +171,8 @@ public class DAOclient {
 			stmt.executeUpdate();
 
 		}  catch (SQLException ex) {
-			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+                    System.out.println(ex.getMessage());
+                    Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
 		}
     }
     
