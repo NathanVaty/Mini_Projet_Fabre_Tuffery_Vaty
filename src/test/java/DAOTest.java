@@ -72,7 +72,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon une zone géographique
      */
-    @Test @Ignore
+    @Test
     public void testCAZoneGeo() {
         // variable locale
          String dateDeb = "2011-05-24";
@@ -84,7 +84,7 @@ public class DAOTest {
          HashMap<String,Double> resultAttendu = new HashMap<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("10094",48727.5);
+         resultAttendu.put("10095",48727.5);
          resultAttendu.put("10096",53039.55);
          resultAttendu.put("12347",557.535);
          resultAttendu.put("48124",6963.375);
@@ -113,7 +113,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon un client
      */
-    @Test @Ignore
+    @Test
     public void testCAClient() {
          // variable locale
          String dateDeb = "2011-05-24";
@@ -190,6 +190,14 @@ public class DAOTest {
     
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
+    // Edit customer test
+    public void testEditCustomer(){
+        
+    }
+    // Add purchaser order
+    // Edit purchaser order
+    // delete purchaser order
+
 }
 
 

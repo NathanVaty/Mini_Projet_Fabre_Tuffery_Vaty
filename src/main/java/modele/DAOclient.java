@@ -25,6 +25,8 @@ public class DAOclient {
         this.myDataSource = dataSource;
     }
     
+    
+    
     /**
      * Fonction permettant aux clients de modifier ses données personnelles.
      * @param customerId
@@ -64,6 +66,7 @@ public class DAOclient {
              discountStatement.execute();
               
           } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -80,7 +83,7 @@ public class DAOclient {
      * @param freightCompany 
      */
     public void addPurchaseOrder(int customerId ,int productId,int quantite, float shippingCost, String salesDate,
-                                 String shippingDate, String freightCompany){
+                                 String shippingDate, String freightCompany)throws Exception {
         
         String sql = "INSERT INTO PURCHASE_ORDER(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
@@ -107,6 +110,7 @@ public class DAOclient {
              // On ajoute le code discount avec une requete
              discountStatement.execute();
          } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -124,13 +128,13 @@ public class DAOclient {
      * @param freightCompany 
      */
     public void editPurchaseOrder(int orderNum, int customerId ,int productId,int quantite, float shippingCost, String salesDate,
-                                 String shippingDate, String freightCompany){
+                                 String shippingDate, String freightCompany)throws Exception {
         
         String sql = "UPDATE PURCHASE_ORDER SET CUSTOMER_ID = ? , PRODUCT_ID = ? , QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ? "
                    + " WHERE ORDER_NUM = ?"
                   ;
          try (Connection connection = myDataSource.getConnection();
-                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)){
 
              discountStatement.setInt(1, customerId);
              discountStatement.setInt(2, productId);
@@ -145,6 +149,7 @@ public class DAOclient {
              // On ajoute le code discount avec une requete
              discountStatement.execute();
          } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
         
@@ -154,7 +159,7 @@ public class DAOclient {
      * Fonction permettant aux clients de supprimer leurs bons de commande
      * @param orderId 
      */
-    public void deletePurchaseOrder(int orderId){
+    public void deletePurchaseOrder(int orderId)throws Exception {
        
         // Une requête SQL paramétrée
 		String sql = "DELETE FROM PURCHASE_ORDER WHERE ORDER_NUM = ?";
@@ -168,10 +173,55 @@ public class DAOclient {
 			stmt.executeUpdate();
 
 		}  catch (SQLException ex) {
-			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+                    System.out.println(ex.getMessage());
+                    Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
 		}
     }
     
+    /**
+     * 
+     * @param num
+     * @return boolean si il estxiste ou pas dans la BD
+     * @throws java.sql.SQLException
+     */
+    public boolean findCustomer(int num) throws SQLException{
+        boolean result = false;
+        String sql = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+		try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setInt(1, num);
+
+			ResultSet rs = stmt.executeQuery();
+                        // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
+			if (rs.next()) {
+				result = true;
+			}
+                }
+        return result;
+    }
+    
+    
+    /**
+     * 
+     * @param num
+     * @return boolean si il estxiste ou pas dans la BD
+     * @throws java.sql.SQLException
+     */
+    public boolean findPurchaseOrder(int num) throws SQLException{
+        boolean result = false;
+        String sql = "SELECT * FROM PURCHASE_ORDER WHERE ORDER_NUM = ?";
+		try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setInt(1, num);
+
+			ResultSet rs = stmt.executeQuery();
+                        // Si on trouve au moins une ligne correspondant au purchase order on renvoie vrai
+			if (rs.next()) {
+				result = true;
+			}
+                }
+        return result;
+    }
             
 }
 
