@@ -10,10 +10,7 @@ import javax.sql.DataSource;
 import modele.DAOadmin;
 import modele.DAOclient;
 import modele.DataSourceFactory;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -41,12 +38,11 @@ public class DAOTest {
      */
     @Test
     public void testCACatego() {
-        // valeur
-        Date dateDeb = new Date("2011/05/24");
-        Date dateFin = new Date("2011/05/24");
+        // variable local
+        String dateDeb = "2011-05-24";
+        String dateFin = "2011-05-24";
         boolean valide = true;
-        HashMap<String,Double> result = new HashMap<>();
-        result = myDaoAdmin.CAofCategorie(dateDeb,dateFin);
+        HashMap<String,Double> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
         
         HashMap<String,Double> resultAttendu = new HashMap<>();
         resultAttendu.put("BK", 6963.375000);
@@ -60,14 +56,17 @@ public class DAOTest {
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
                // ON vérifie le contenu de la clé
-               if(! result.get(key).equals(resultAttendu.get(key))){
+               if(!(result.get(key).equals(resultAttendu.get(key)))){
+                   System.out.println("Erreur sur la clé " + result.get(key)
+                                    +" la valeur n'est pas bonne");
                    valide = false;
                }
            } else {
+               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
                valide = false;
            }
         }    
-        assertEquals(true, valide);
+        assertEquals(valide, true);
     }
     
     /**
@@ -75,10 +74,40 @@ public class DAOTest {
      */
     @Test @Ignore
     public void testCAZoneGeo() {
-        // TODO implementer test + changer val retour
-         Date dateDeb = new Date("2018/11/30");
-         Date dateFin = new Date("2018/11/30");
-         //HashMap<String,Double> result = myDaoAdmin.CAofZoneGeo(dateDeb, dateFin); //bouchon
+        // variable locale
+         String dateDeb = "2011-05-24";
+         String dateFin = "2011-05-24";
+         boolean valide = true;
+         HashMap<String,Double> result = myDaoAdmin.CAofZoneGeo(dateDeb, dateFin);
+         
+         // HashMap de retour
+         HashMap<String,Double> resultAttendu = new HashMap<>();
+         
+         // valleur attendu dans la hashmap
+         resultAttendu.put("10094",48727.5);
+         resultAttendu.put("10096",53039.55);
+         resultAttendu.put("12347",557.535);
+         resultAttendu.put("48124",6963.375);
+         resultAttendu.put("48128",170026.05);
+         resultAttendu.put("94401",68810.6);
+         resultAttendu.put("95035",130501.8388);
+         resultAttendu.put("95117",57916.35);
+         
+        // Vérification du contenu de la table crée
+        for(String key : result.keySet()){
+           // On vérifie si la clé existe
+           if (resultAttendu.containsKey(key)){
+               if(!(result.get(key).equals(resultAttendu.get(key)))){
+                   System.out.println("Erreur sur la clé " + result.get(key)
+                                    +" la valeur n'est pas bonne");
+                   valide = false;
+               }
+           } else {
+               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
+               fail(); //Si erreur on passe par la
+           }
+        }    
+        assertEquals(valide, true);
     }
     
     /**
@@ -86,11 +115,45 @@ public class DAOTest {
      */
     @Test @Ignore
     public void testCAClient() {
-        //TODO Implementer + changer val retour
-        Date dateDeb = new Date("2018/11/30");
-        Date dateFin = new Date("2018/11/30");
-        HashMap<String,Double> result = myDaoAdmin.CAfromClient(dateDeb, dateFin); //bouchon
-
+         // variable locale
+         String dateDeb = "2011-05-24";
+         String dateFin = "2011-05-24";
+         boolean valide = true;
+         HashMap<String,Double> result = myDaoAdmin.CAfromClient(dateDeb, dateFin);
+         
+         // HashMap de retour
+         HashMap<String,Double> resultAttendu = new HashMap<>();
+         
+         // valleur attendu dans la hashmap
+         resultAttendu.put("1",13460.85);
+         resultAttendu.put("2",125922.3388);
+         resultAttendu.put("3",557.535);
+         resultAttendu.put("36",60934.8);
+         resultAttendu.put("106",4599.0);
+         resultAttendu.put("149",44455.5);
+         resultAttendu.put("409",48727.5);
+         resultAttendu.put("410",53039.55);
+         resultAttendu.put("722",6963.375);
+         resultAttendu.put("553",168079.8);
+         resultAttendu.put("777",1946.25);
+         resultAttendu.put("863",5875.8);
+         
+        // Vérification du contenu de la table crée
+        for(String key : result.keySet()){
+           // On vérifie si la clé existe
+           if (resultAttendu.containsKey(key)){
+               // ON vérifie le contenu de la clé
+               if(!(result.get(key).equals(resultAttendu.get(key)))){
+                   System.out.println("Erreur sur la clé " + result.get(key)
+                                    +" la valeur n'est pas bonne");
+                   valide = false;
+               }
+           } else {
+               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
+               valide = false;
+           }
+        }    
+        assertEquals(valide, true);
     }
     
     @Test @Ignore
@@ -128,5 +191,6 @@ public class DAOTest {
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
 }
+
 
 
