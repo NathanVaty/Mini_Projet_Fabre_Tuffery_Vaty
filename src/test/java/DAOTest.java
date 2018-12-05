@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-import java.util.Date;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import modele.DAOadmin;
@@ -156,21 +155,25 @@ public class DAOTest {
         assertEquals(valide, true);
     }
     
-    @Test @Ignore
+    @Test
     public void testInsertProduct() {
-        // Valeur a inserer dans la table produit TODO
-        
         // TODO Implementer + changer val retour
-        myDaoAdmin.insertProduct(); //bouchon
+        try {
+            myDaoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test");
+        } catch (Exception e) {
+            fail();
+        }
+        
         
        // requete qui permet de trouver un produit  : Si la requete select 
         // fonctionne alors le produit a été inserré sinon => fail de l'insertion
+        
     }
     
     @Test @Ignore
     public void testUpdateProduct(){
         //TODO implementer + changer val retour
-        myDaoAdmin.updateProduct(); //bouchon
+        //myDaoAdmin.updateProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test"); //bouchon
         
         // Requete qui permet de verifie si le produti a été update 
         // => on récupere la nouvelle valeur si elle est égale a la valeur passé 
@@ -180,7 +183,7 @@ public class DAOTest {
     @Test @Ignore
     public void testDeleteProduct(){
         //TODO implementer + changer val retour
-        myDaoAdmin.deleteProduct(); // bouchon
+       // myDaoAdmin.deleteProduct(); // bouchon
         
         // Reque qui affiche un produit : Si la requete select marche 
         // alors le produti n'a pas été supprimé => fail de la suppression
@@ -199,6 +202,9 @@ public class DAOTest {
     // delete purchaser order
 
 }
+
+
+
 
 
 
