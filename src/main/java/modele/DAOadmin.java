@@ -141,7 +141,7 @@ public class DAOadmin {
      * @param dispo
      * @param desc
      */
-    public void insertProduct(int manufactID,int prodCode, double prodCost,
+    public void insertProduct(int manufactID,String prodCode, double prodCost,
                     int quantite, double markup, boolean dispo, String desc) {
         String sql = "INSERT INTO PRODUCT "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
@@ -158,7 +158,7 @@ public class DAOadmin {
              
              discountStatement.setInt(1, orderNum);
              discountStatement.setInt(2, manufactID);
-             discountStatement.setInt(3, prodCode);
+             discountStatement.setString(3, prodCode);
              discountStatement.setDouble(4, prodCost);
              discountStatement.setInt(5, quantite);
              discountStatement.setDouble(6, markup);
@@ -184,7 +184,7 @@ public class DAOadmin {
      * @param desc
      * @return 
      */
-    public void updateProduct(int productID, int manufactID,int prodCode, double prodCost,
+    public void updateProduct(int productID, int manufactID,String prodCode, double prodCost,
                     int quantite, double markup, boolean dispo, String desc) {
         String sql = "UPDATE PRODUCT SET MANUFACTURER_ID = ? , PRODUCT_CODE = ? , PURCHASE_COST = ?, QUANTITY_ON_HAND = ?, "
                 + " MARKUP = ?, AVAILABLE = ?, DESCRIPTION = ? "
@@ -194,7 +194,7 @@ public class DAOadmin {
                  PreparedStatement discountStatement = connection.prepareStatement(sql)){
 
              discountStatement.setInt(1, manufactID);
-             discountStatement.setInt(2, prodCode);
+             discountStatement.setString(2, prodCode);
              discountStatement.setInt(3, quantite);
              discountStatement.setInt(4, quantite);
              discountStatement.setDouble(5, markup);
@@ -277,4 +277,5 @@ public class DAOadmin {
         return result;
     }
 }
+
 
