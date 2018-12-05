@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import javax.sql.DataSource;
@@ -57,7 +61,8 @@ public class DAOTest {
            if (resultAttendu.containsKey(key)){
                // ON vérifie le contenu de la clé
                if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé " + result.get(key)
+                   System.out.println("Erreur sur la clé" + key 
+                                    + " " + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -72,7 +77,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon une zone géographique
      */
-    @Test
+    @Test 
     public void testCAZoneGeo() {
         // variable locale
          String dateDeb = "2011-05-24";
@@ -89,7 +94,7 @@ public class DAOTest {
          resultAttendu.put("12347",557.535);
          resultAttendu.put("48124",6963.375);
          resultAttendu.put("48128",170026.05);
-         resultAttendu.put("94401",68810.6);
+         resultAttendu.put("94401",66810.6);
          resultAttendu.put("95035",130501.8388);
          resultAttendu.put("95117",57916.35);
          
@@ -98,7 +103,8 @@ public class DAOTest {
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
                if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé " + result.get(key)
+                   System.out.println("Erreur sur la clé" + key 
+                                    + " " + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -126,7 +132,7 @@ public class DAOTest {
          
          // valleur attendu dans la hashmap
          resultAttendu.put("1",13460.85);
-         resultAttendu.put("2",125922.3388);
+         resultAttendu.put("2",125902.8388);
          resultAttendu.put("3",557.535);
          resultAttendu.put("36",60934.8);
          resultAttendu.put("106",4599.0);
@@ -134,7 +140,7 @@ public class DAOTest {
          resultAttendu.put("409",48727.5);
          resultAttendu.put("410",53039.55);
          resultAttendu.put("722",6963.375);
-         resultAttendu.put("553",168079.8);
+         resultAttendu.put("753",168079.8);
          resultAttendu.put("777",1946.25);
          resultAttendu.put("863",5875.8);
          
@@ -143,8 +149,9 @@ public class DAOTest {
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
                // ON vérifie le contenu de la clé
-               if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé " + result.get(key)
+               if(!(result.get(key).equals(resultAttendu.get(key)))){                   
+                   System.out.println("Erreur sur la clé" + key 
+                                    + " " + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -161,7 +168,7 @@ public class DAOTest {
         // Valeur a inserer dans la table produit TODO
         
         // TODO Implementer + changer val retour
-        myDaoAdmin.insertProduct(); //bouchon
+        //myDaoAdmin.insertProduct(); //bouchon
         
        // requete qui permet de trouver un produit  : Si la requete select 
         // fonctionne alors le produit a été inserré sinon => fail de l'insertion
@@ -170,7 +177,7 @@ public class DAOTest {
     @Test @Ignore
     public void testUpdateProduct(){
         //TODO implementer + changer val retour
-        myDaoAdmin.updateProduct(); //bouchon
+        //myDaoAdmin.updateProduct(); //bouchon
         
         // Requete qui permet de verifie si le produti a été update 
         // => on récupere la nouvelle valeur si elle est égale a la valeur passé 
@@ -180,7 +187,7 @@ public class DAOTest {
     @Test @Ignore
     public void testDeleteProduct(){
         //TODO implementer + changer val retour
-        myDaoAdmin.deleteProduct(); // bouchon
+        //myDaoAdmin.deleteProduct(); // bouchon
         
         // Reque qui affiche un produit : Si la requete select marche 
         // alors le produti n'a pas été supprimé => fail de la suppression
@@ -190,9 +197,36 @@ public class DAOTest {
     
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
-    // Edit customer test
-    public void testEditCustomer(){
+    @Test
+    public void testEditCustomer() throws SQLException{
+        // On test le changement de nom sur le premier client
+        int customerId = 1;
+        String zip =  "95117";
+        String name = "Jumbo Pas Eagle Corp";
+        String addressLine1 =  "111 E. Las Olivia Blvd";
+        String addressLine2 = "Suite 51";
+        String city = "Fort Lauderdale";
+        String state = "FL";
+        String phone = "355-555-0188";
+        String fax = "355-555-0189";
+        String email = "jumboeagle@example.com";
         
+        myDaoClient.editPersonnalData(customerId, zip, name, addressLine1, 
+                                addressLine2, city, state, phone, fax, email);
+        
+        // On doit obtenir un nouveau nom
+        String testSql = "SELECT NAME FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+        String resultTest ="";
+        try (Connection connection = myDataSource.getConnection();
+             PreparedStatement testStatement = connection.prepareStatement(testSql)){
+              
+             testStatement.setInt(1, customerId);
+             try (ResultSet rs = testStatement.executeQuery()) {
+		rs.next(); // On a toujours exactement 1 enregistrement dans le résultat
+		resultTest = rs.getString("NAME");
+            }
+        }
+        assertEquals(name, resultTest);
     }
     // Add purchaser order
     // Edit purchaser order
