@@ -61,8 +61,9 @@ public class DAOTest {
            if (resultAttendu.containsKey(key)){
                // ON vérifie le contenu de la clé
                if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé" + key 
-                                    + " " + resultAttendu.get(key)
+                   System.out.println("Erreur sur la clé (" + result.keySet() 
+                                    + ") résultat attendu : "  
+                                    + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -103,8 +104,9 @@ public class DAOTest {
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
                if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé" + key 
-                                    + " " + resultAttendu.get(key)
+                   System.out.println("Erreur sur la clé (" + result.keySet() 
+                                    + ") résultat attendu : "  
+                                    + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -149,9 +151,10 @@ public class DAOTest {
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
                // ON vérifie le contenu de la clé
-               if(!(result.get(key).equals(resultAttendu.get(key)))){                   
-                   System.out.println("Erreur sur la clé" + key 
-                                    + " " + resultAttendu.get(key)
+               if(!(result.get(key).equals(resultAttendu.get(key)))){
+                   System.out.println("Erreur sur la clé (" + result.keySet() 
+                                    + ") résultat attendu : "  
+                                    + resultAttendu.get(key)
                                     +" la valeur n'est pas bonne");
                    valide = false;
                }
@@ -198,7 +201,7 @@ public class DAOTest {
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
     @Test
-    public void testEditCustomer() throws SQLException{
+    public void testEditCustomer() throws SQLException, Exception{
         // On test le changement de nom sur le premier client
         int customerId = 1;
         String zip =  "95117";
@@ -225,6 +228,9 @@ public class DAOTest {
 		rs.next(); // On a toujours exactement 1 enregistrement dans le résultat
 		resultTest = rs.getString("NAME");
             }
+        } catch ( SQLException ex ){
+            System.out.println(ex.getMessage());
+            fail();
         }
         assertEquals(name, resultTest);
     }
