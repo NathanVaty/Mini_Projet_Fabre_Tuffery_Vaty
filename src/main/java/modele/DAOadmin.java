@@ -99,7 +99,7 @@ public class DAOadmin {
     }
 
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
+     * Renvoie le chiffre d'affaire par client
      * @param dateDeb
      * @param dateFin
      * @return 
@@ -132,15 +132,14 @@ public class DAOadmin {
     }
 
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
+     * Ajouter un produit
      * @param manufactID
      * @param prodCode
-     * @param prod_cost
+     * @param prodCost
      * @param quantite
      * @param markup
      * @param dispo
      * @param desc
-     * @return 
      */
     public void insertProduct(int manufactID,int prodCode, double prodCost,
                     int quantite, double markup, boolean dispo, String desc) {
@@ -175,65 +174,107 @@ public class DAOadmin {
     }
     
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
+     * Modifier un produit
+     * @param manufactID
+     * @param prodCode
+     * @param prodCost
+     * @param quantite
+     * @param markup
+     * @param dispo
+     * @param desc
      * @return 
      */
-    public int updateProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateProduct(int productID, int manufactID,int prodCode, double prodCost,
+                    int quantite, double markup, boolean dispo, String desc) {
+        String sql = "UPDATE PRODUCT SET MANUFACTURER_ID = ? , PRODUCT_CODE = ? , PURCHASE_COST = ?, QUANTITY_ON_HAND = ?, "
+                + " MARKUP = ?, AVAILABLE = ?, DESCRIPTION = ? "
+                + " WHERE PRODUCT_ID = ?"
+                  ;
+         try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)){
+
+             discountStatement.setInt(1, manufactID);
+             discountStatement.setInt(2, prodCode);
+             discountStatement.setInt(3, quantite);
+             discountStatement.setInt(4, quantite);
+             discountStatement.setDouble(5, markup);
+             discountStatement.setBoolean(6, dispo);
+             discountStatement.setString(7, desc);
+             discountStatement.setInt(8, productID);
+             
+             
+             // On ajoute le code discount avec une requete
+             discountStatement.execute();
+         } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
     }
 
     /**
-     * TODO modifier type retour+param ==> fichier de test aussi
-     * @return 
+     * Supprimer un produit
+     * @param productID 
      */
-    public int deleteProduct() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteProduct(int productID) {
+        // Une requête SQL paramétrée
+		String sql = "DELETE FROM PRODUCT WHERE PRODUCT_ID = ?";
+		try (   Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)
+                ) {
+                        // Définir la valeur du paramètre
+			stmt.setInt(1, productID);
+			
+                        // On execute la requete
+			stmt.executeUpdate();
+
+		}  catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                    Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+		}
+    }
+    
+    /** 
+     * retourne vrai si le manufacturer existe
+     * @param manuID
+     * @return
+     * @throws SQLException 
+     */
+    public boolean manufacturerExist(int manuID) throws SQLException {
+        boolean result = false;
+        String sql = "SELECT * FROM MANUFACTURER WHERE MANUFACTURER_ID = ?";
+		try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setInt(1, manuID);
+
+			ResultSet rs = stmt.executeQuery();
+                        // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
+			if (rs.next()) {
+				result = true;
+			}
+                }
+        return result;
+    }
+    
+    /**
+     * renvoie vrai si le code produit existe
+     * @param prodCode
+     * @return
+     * @throws SQLException 
+     */
+    public boolean productCodeExist(int prodCode) throws SQLException {
+        boolean result = false;
+        String sql = "SELECT * FROM PRODUCT_CODE WHERE PROD_CODE = ?";
+		try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setInt(1, prodCode);
+
+			ResultSet rs = stmt.executeQuery();
+                        // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
+			if (rs.next()) {
+				result = true;
+			}
+                }
+        return result;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
