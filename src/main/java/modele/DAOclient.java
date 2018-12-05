@@ -20,6 +20,8 @@ public class DAOclient {
 
     
     protected final DataSource myDataSource;
+    private final String mess1 = "Customer inconnu";
+    private final String mess2 = "Purchase Order inconnu";
     
     public DAOclient(DataSource dataSource){
         this.myDataSource = dataSource;
@@ -39,16 +41,23 @@ public class DAOclient {
      * @param phone
      * @param fax
      * @param email 
+     * @throws java.lang.Exception 
      */
     public void editPersonnalData(int customerId , String zip, String name, String addressLine1 ,
                                   String addressLine2,String city, String state,
-                                  String phone, String fax, String email){
+                                  String phone, String fax, String email)throws Exception{
         
          String sql = "UPDATE CUSTOMER SET ZIP = ?, NAME = ?, ADDRESSLINE1 = ?, ADDRESSLINE2 = ?, CITY = ? , STATE = ?, PHONE = ?, FAX = ?, EMAIL = ? "
                    + " WHERE CUSTOMER_ID = ? ";
          
           try (Connection connection = myDataSource.getConnection();
                  PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+
+              
+            if (!findCustomer(customerId)){
+                throw new Exception(mess1);
+            }   
+              
               
              discountStatement.setString(1, zip);
              discountStatement.setString(2, name);
@@ -81,6 +90,7 @@ public class DAOclient {
      * @param salesDate
      * @param shippingDate
      * @param freightCompany 
+     * @throws java.lang.Exception 
      */
     public void addPurchaseOrder(int customerId ,int productId,int quantite, float shippingCost, String salesDate,
                                  String shippingDate, String freightCompany)throws Exception {
@@ -135,6 +145,10 @@ public class DAOclient {
                   ;
          try (Connection connection = myDataSource.getConnection();
                  PreparedStatement discountStatement = connection.prepareStatement(sql)){
+             
+            if (!findPurchaseOrder(orderNum)){
+                throw new Exception(mess2);
+            }  
 
              discountStatement.setInt(1, customerId);
              discountStatement.setInt(2, productId);
@@ -157,17 +171,22 @@ public class DAOclient {
     
     /**
      * Fonction permettant aux clients de supprimer leurs bons de commande
-     * @param orderId 
+     * @param orderNum
+     * @throws java.lang.Exception
      */
-    public void deletePurchaseOrder(int orderId)throws Exception {
+    public void deletePurchaseOrder(int orderNum)throws Exception {
        
         // Une requête SQL paramétrée
 		String sql = "DELETE FROM PURCHASE_ORDER WHERE ORDER_NUM = ?";
 		try (   Connection connection = myDataSource.getConnection();
 			PreparedStatement stmt = connection.prepareStatement(sql)
                 ) {
+                    
+                    if (!findPurchaseOrder(orderNum)){
+                        throw new Exception(mess2);
+                    } 
                         // Définir la valeur du paramètre
-			stmt.setInt(1, orderId);
+			stmt.setInt(1, orderNum);
 			
                         // On execute la requete
 			stmt.executeUpdate();
