@@ -171,6 +171,7 @@ public class DAOTest {
         try {
             myDaoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test");
         } catch (Exception e) {
+            System.out.println("Erreur sur l'insertion d'un produit");
             fail();
         }
         
@@ -180,26 +181,57 @@ public class DAOTest {
         
     }
     
-    @Test @Ignore
+    @Test
     public void testUpdateProduct(){
         //TODO implementer + changer val retour
-        //myDaoAdmin.updateProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test"); //bouchon
-        
+        //updateProduct(int productID, int manufactID,String prodCode, double prodCost,
+        //            int quantite, double markup, boolean dispo, String desc)
+        String sql = "SELECT * FROM PRODUCT WHERE MANUFACTURER_ID = ?";
+
+        try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement testStatement = connection.prepareStatement(sql)) {
+            int manufactID = 19985678; 
+            int result = 0;
+            testStatement.setInt(1, manufactID);
+            // on execute la requete de test avec le parametre
+            try (ResultSet rs = testStatement.executeQuery()) {
+		rs.next(); // On a toujours exactement 1 enregistrement dans le résultat
+	        result = rs.getInt("PRODUCT_ID");
+	    }
+            
+            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, true, "Produit Test Update");
+        } catch (Exception e) {
+            System.out.println("Erreur sur la modification d'un produit");
+            fail();
+        }
         // Requete qui permet de verifie si le produti a été update 
         // => on récupere la nouvelle valeur si elle est égale a la valeur passé 
         // en param alors ça marche sinon => fail de la mise a jour
     }
     
-    @Test @Ignore
-    public void testDeleteProduct(){
+    @Test
+    public void testDeleteProductExist(){
         //TODO implementer + changer val retour
        // myDaoAdmin.deleteProduct(); // bouchon
-        
+       try{
+            myDaoAdmin.deleteProduct(19985678);
+            System.out.println("Le produit a été supprimé");
+       } catch (Exception e) {
+            fail();
+       }
         // Reque qui affiche un produit : Si la requete select marche 
         // alors le produti n'a pas été supprimé => fail de la suppression
-        
     }
     
+    @Test
+      public void testDeleteProductUnexist(){
+          try {
+              myDaoAdmin.deleteProduct(19985678);
+              fail();
+          } catch (Exception e){
+              // Si il y a une erreur alors la fonction marche bien 
+          }
+      }
     
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
@@ -238,6 +270,13 @@ public class DAOTest {
         assertEquals(name, resultTest);
     }
     // Add purchaser order
+    public void addPurchaseOrder(){
+        try {
+            myDaoClient.addPurchaseOrder(1398120, 2, 980032, 5, "2018-11-12", "2018-11-12", "Momo Company");
+        } catch (Exception e) {
+            System.out.println("Erreur sur l'ajout d'un produit");
+        }
+    }
     // Edit purchaser order
     // delete purchaser order
 
