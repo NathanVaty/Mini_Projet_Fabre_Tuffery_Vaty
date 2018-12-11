@@ -9,9 +9,18 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Connexion</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Bienvenue sur Le bon coté !</h1>
+        <hr/>
+        <p>
+            Identifiez vous:<br/>
+        <form>
+            ID: <input type="text" /><br/>
+            mdp: <input type="password"><br/>
+            <input type="submit" value="Connexion">
+        </form>
+        </p>
     </body>
 </html>
