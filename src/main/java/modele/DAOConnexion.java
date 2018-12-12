@@ -28,7 +28,6 @@ public class DAOConnexion {
     }
     
     public String connexion(String login, String mdp) throws SQLException {
-        String result = "";
         login = login != null? login: "";
         mdp = mdp != null ? mdp: "";
         if (login.equals("admin") && mdp.equals("admin")) {
@@ -43,12 +42,14 @@ public class DAOConnexion {
 			ResultSet rs = stmt.executeQuery();
                         // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
 			if (rs.next()) {
-				result = "client";
+				return "client";
 			}
                 }
         return "erreur";
     }
 }
+
+
 
 
 

@@ -198,7 +198,7 @@ public class DAOadmin {
 
              discountStatement.setInt(1, manufactID);
              discountStatement.setString(2, prodCode);
-             discountStatement.setInt(3, quantite);
+             discountStatement.setDouble(3, prodCost);
              discountStatement.setInt(4, quantite);
              discountStatement.setDouble(5, markup);
              discountStatement.setBoolean(6, dispo);
@@ -307,6 +307,7 @@ public class DAOadmin {
 		return result ;              
     }
 }
+
 
 
 

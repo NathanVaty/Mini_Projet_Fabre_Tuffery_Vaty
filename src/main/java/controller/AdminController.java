@@ -40,6 +40,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 	action = (action == null) ? "" : action; // Pour le switch qui n'aime pas les null
+        String idProduit = request.getParameter("idProduit");
 	String codeFabricant = request.getParameter("manuId");
         String codeProduit = request.getParameter("productCode");
         String prixAchat = request.getParameter("purchaseCost");
@@ -47,26 +48,31 @@ public class AdminController extends HttpServlet {
         String marge = request.getParameter("markup");
         String dispo = request.getParameter("dispo");
         String descproduit = request.getParameter("descProd");
-         
+        
+        DAOadmin daoAdmin; //DAO de l'admin
+        DataSource myDataSource = DataSourceFactory.getDataSource(); //Data source de l'application
+        daoAdmin = new DAOadmin(myDataSource);
+        
         try {
-            DAOadmin daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
+            
 	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
 	    switch (action) {
-	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-		daoAdmin.insertProduct(Integer.valueOf(codeFabricant), codeProduit, Float.valueOf(prixAchat), Integer.valueOf(stock), Float.valueOf(marge), Boolean.valueOf(dispo), descproduit);
-                request.setAttribute("message", "Produit  Ajouté");
+	    case "ajouter": // Requête d'ajout (vient du formulaire de saisie)
+		daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Float.parseFloat(prixAchat), Integer.parseInt(stock), Float.parseFloat(marge), Boolean.parseBoolean(dispo), descproduit);
+                request.setAttribute("message","Code " + idProduit + " Ajouté");
 		request.setAttribute("listProduct", daoAdmin.listAllProduct());	
                 break;
             case "DELETE": // Requête de suppression (vient du lien hypertexte)
-		//try {
-		// TODO DELETE									
-		//} catch (SQLIntegrityConstraintViolationException e) {
-                    //request.setAttribute("message", "Impossible de supprimer " + code + ", ce code est utilisé.");
-		//}
+		try {
+                       daoAdmin.deleteProduct(Integer.parseInt(idProduit));
+                       request.setAttribute("message", "Code " + idProduit + " Supprimé");
+                       request.setAttribute("listProduct", daoAdmin.listAllProduct());									
+		} catch (SQLIntegrityConstraintViolationException e) {
+                    request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+		}
             break;
             }
 	} catch (Exception ex) {
-            Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
             request.setAttribute("message", ex.getMessage());
 	} finally {
 

@@ -57,5 +57,8 @@ public class ProductEntity {
     public boolean isAvailable() {
         return available;
     }
-    
+   
+   public String getDesc() {
+       return desc;
+   }
 }
