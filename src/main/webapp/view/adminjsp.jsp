@@ -25,15 +25,15 @@
                         <option value="false">Pas Disponible</option>
                         </select><br />
                     Description du produit : <textarea name="descProd" rows="3" cols="10" placeholder="Ecrivez votre description" title="une description de produit"></textarea><br/>
-                    <input type="hidden" name="action" value="ADD">
-                    <input type="submit" value="Ajouter">
+                    <input type="submit" name="action" value="ajouter">
+                    
         </form>
         <%--  On montre un éventuel message d'erreur --%>
 	<div><h4>${message}</h4></div>
         <%--  On montre La liste des produits --%>
         <div>
             <table border="1">
-                <tr><th>Id du produit</th><th>Id du fabricant</th><th>Code produit</th><th>Prix achat</th><th>Stock</th><th>Marge</th><th>Disponibilite</th><th>Description</th></tr>
+                <tr><th>Id du produit</th><th>Id du fabricant</th><th>Code produit</th><th>Prix achat</th><th>Stock</th><th>Marge</th><th>Disponibilite</th><th>Description</th><th>Supprimer</th></tr>
                 <c:forEach var="list" items="${listProduct}">
                     <tr>
                         <td>${list.productId}</td>
@@ -44,7 +44,7 @@
                         <td>${list.markup}</td>
                         <td>${list.available}</td>
                         <td>${list.desc}</td>
-                        <td><a href="?action=DELETE&code=${list.productId}">delete</a></td>
+                        <td><a href="?action=DELETE&idProduit=${list.productId}">delete</a></td>
                     </tr>
                 </c:forEach> 
             </table>
