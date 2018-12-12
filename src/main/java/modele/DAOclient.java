@@ -245,27 +245,44 @@ public class DAOclient {
         return result;
     }
     
-    public List<PurchaseOrder> listeOrder() throws SQLException{
+    /**
+     *
+     * @param customerID
+     * @return
+     * @throws SQLException
+     */
+    public List<PurchaseOrder> listeOrder(int customerID) throws SQLException{
         List<PurchaseOrder> result = new LinkedList<>();
-        String rqSqlListDiscount = "SELECT * FROM PURCHASE_ORDER";
+        String rqSqlListDiscount = "SELECT PO.ORDER_NUM,PO.PRODUCT_ID,PO.QUANTITY,PO.SALES_DATE,SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS TOTAL"
+                + " FROM PURCHASE_ORDER PO"
+                + "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID"
+                + "JOIN PRODUCT_CODE PC ON PC.PROD_COD = P.PRODUCT_CODE"
+                + "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE"
+                + "WHERE CUSTOMER_ID = ?"
+                + "GROUP BY PO.ORDER_NUM,PO.PRODUCT_ID,PO.QUANTITY,PO.SALES_DATE";
         
         try (	Connection connection = myDataSource.getConnection();
 		     PreparedStatement stmt = connection.prepareStatement(rqSqlListDiscount)){
-            try (ResultSet rs = stmt.executeQuery()) { 
+            
+                    stmt.setInt(1, customerID);
+                    ResultSet rs ;
+                    rs = stmt.executeQuery();
+                
+                
                 
                 while (rs.next()){ // On récupere la liste des codes de discount
                     
-                    //A MODIFIERRRRRRRRR
                     int order_num = rs.getInt("ORDER_NUM");
-                    int product_id = rs.getInt("RATE");
-                    int quantite = rs.getInt("RATE");
-                    float final_cost = rs.getFloat("RATE");
-                    String sales_date = rs.getString("RATE");
+                    int product_id = rs.getInt("PRODUCT_ID");
+                    int quantite = rs.getInt("QUANTITY");
+                    String sales_date = rs.getString("SALES_DATE");
+                    float final_cost = rs.getFloat("TOTAL");
                     // On crée l'objet DiscountCodeEntity
                     PurchaseOrder discCode = new PurchaseOrder(order_num, product_id,quantite,final_cost,sales_date);
                     // On l'ajoute à la liste des résultats
                     result.add(discCode);
                 }
+                
                 
             } catch (SQLException ex) {
                     System.out.println(ex.getMessage());
@@ -279,7 +296,7 @@ public class DAOclient {
     
    
     }           
-}
+
 
 
 

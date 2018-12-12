@@ -7,15 +7,22 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modele.DAOclient;
+import modele.DataSourceFactory;
 
 /**
  *
  * @author Nathan Vaty
  */
+
+@WebServlet(name = "ClientController", urlPatterns = {"/ClientController"})
 public class ClientController extends HttpServlet {
 
     /**
@@ -29,19 +36,22 @@ public class ClientController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ClientController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ClientController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        String action = request.getParameter("action");
+	action = (action == null) ? "" : action;
+        int customerId = Integer.parseInt(request.getParameter("CustomerID"));
+        try {
+            DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+	    
+	    
+        } catch (Exception ex) {
+            Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
+            request.setAttribute("message", ex.getMessage());
+	} finally {
+
+	}
+        
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

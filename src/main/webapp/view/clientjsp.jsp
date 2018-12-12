@@ -15,12 +15,13 @@
         <h1>Display Client</h1>
 		<c:choose>
 			<%-- On n'a pas trouvé le client --%>
-			<c:when test="${empty customer}">
+			<c:when test="${empty customerId}">
 				Client inconnu.			
 			</c:when>
                                 
                         <c:otherwise> <%-- On a trouvé --%>
                             
+                            <h1>${customerId}</h1>
                             <a href="clientEdit.jsp">Editer mes données personnelles</a>
                
                             <a href="clientAjout.jsp">Ajouter une commande</a>
