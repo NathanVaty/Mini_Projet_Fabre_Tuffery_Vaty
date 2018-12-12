@@ -5,11 +5,14 @@
  */
 package modele;
 
+import entity.ProductEntity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -275,6 +278,33 @@ public class DAOadmin {
 			}
                 }
         return result;
+    }
+    
+        /**
+     * Méthode qui permet de récuperer une liste de tous les produits
+     * @return une liste de tous les produits
+     */
+    public List<ProductEntity> listAllProduct() throws SQLException{
+        List<ProductEntity> result = new LinkedList<>();
+        String sql = "SELECT * FROM PRODUCT";
+        try (Connection connection = myDataSource.getConnection();
+		     PreparedStatement stmt = connection.prepareStatement(sql)) {
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					 int productId = rs.getInt("PRODUCT_ID");
+                                         int manuId = rs.getInt("MANUFACTURER_ID");
+                                         String productCode = rs.getString("PRODUCT_CODE");
+                                         Double costProduct = rs.getDouble("PURCHASE_COST");
+                                         int quantity = rs.getInt("QUANTITY_ON_HAND");
+                                         Double markup = rs.getDouble("MARKUP");
+                                         boolean available = rs.getBoolean("AVAILABLE");
+                                         String desc = rs.getString("DESCRIPTION");
+					ProductEntity c = new ProductEntity(productId, manuId, productCode, costProduct, quantity, markup, available, desc);
+					result.add(c);
+				}
+			}
+		}
+		return result ;              
     }
 }
 

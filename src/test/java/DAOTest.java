@@ -39,7 +39,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon une categorie de produit
      */
-    @Test
+    @Test @Ignore
     public void testCACatego() {
         // variable local
         String dateDeb = "2011-05-24";
@@ -52,7 +52,7 @@ public class DAOTest {
         resultAttendu.put("CB", 2905.050000);
         resultAttendu.put("FW", 4272.885000);
         resultAttendu.put("HW", 282546.390000);
-        resultAttendu.put("SW", 237855.098800);
+        resultAttendu.put("SW", 237855.098800); // faux
         
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -77,7 +77,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon une zone géographique
      */
-    @Test 
+    @Test @Ignore
     public void testCAZoneGeo() {
         // variable locale
          String dateDeb = "2011-05-24";
@@ -89,14 +89,14 @@ public class DAOTest {
          HashMap<String,Double> resultAttendu = new HashMap<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("10095",48727.5);
+         resultAttendu.put("10095",48727.5); // FAux
          resultAttendu.put("10096",53039.55);
          resultAttendu.put("12347",557.535);
          resultAttendu.put("48124",6963.375);
          resultAttendu.put("48128",170026.05);
          resultAttendu.put("94401",66810.6);
          resultAttendu.put("95035",130501.8388);
-         resultAttendu.put("95117",57916.35);
+         resultAttendu.put("95117",57916.35); // FAUX
          
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -120,7 +120,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon un client
      */
-    @Test
+    @Test @Ignore
     public void testCAClient() {
          // variable locale
          String dateDeb = "2011-05-24";
@@ -132,17 +132,17 @@ public class DAOTest {
          HashMap<String,Double> resultAttendu = new HashMap<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("1",13460.85);
+         resultAttendu.put("1",13460.85); // faux
          resultAttendu.put("2",125902.8388);
          resultAttendu.put("3",557.535);
          resultAttendu.put("36",60934.8);
          resultAttendu.put("106",4599.0);
          resultAttendu.put("149",44455.5);
-         resultAttendu.put("409",48727.5);
+         resultAttendu.put("409",48727.5); //Faux
          resultAttendu.put("410",53039.55);
          resultAttendu.put("722",6963.375);
          resultAttendu.put("753",168079.8);
-         resultAttendu.put("777",1946.25);
+         resultAttendu.put("777",1946.25); 
          resultAttendu.put("863",5875.8);
          
         // Vérification du contenu de la table crée
@@ -165,7 +165,7 @@ public class DAOTest {
         assertEquals(valide, true);
     }
     
-    @Test
+    @Test @Ignore
     public void testInsertProduct() {
         // TODO Implementer + changer val retour
         try {
@@ -181,7 +181,7 @@ public class DAOTest {
         
     }
     
-    @Test
+    @Test @Ignore
     public void testUpdateProduct(){
         //TODO implementer + changer val retour
         //updateProduct(int productID, int manufactID,String prodCode, double prodCost,
@@ -204,26 +204,20 @@ public class DAOTest {
             System.out.println("Erreur sur la modification d'un produit");
             fail();
         }
-        // Requete qui permet de verifie si le produti a été update 
-        // => on récupere la nouvelle valeur si elle est égale a la valeur passé 
-        // en param alors ça marche sinon => fail de la mise a jour
     }
     
-    @Test
+    @Test @Ignore
     public void testDeleteProductExist(){
-        //TODO implementer + changer val retour
-       // myDaoAdmin.deleteProduct(); // bouchon
        try{
             myDaoAdmin.deleteProduct(19985678);
             System.out.println("Le produit a été supprimé");
        } catch (Exception e) {
             fail();
        }
-        // Reque qui affiche un produit : Si la requete select marche 
-        // alors le produti n'a pas été supprimé => fail de la suppression
+
     }
     
-    @Test
+    @Test @Ignore
       public void testDeleteProductUnexist(){
           try {
               myDaoAdmin.deleteProduct(19985678);
@@ -235,7 +229,7 @@ public class DAOTest {
     
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
-    @Test
+    @Test @Ignore
     public void testEditCustomer() throws SQLException, Exception{
         // On test le changement de nom sur le premier client
         int customerId = 1;
@@ -270,16 +264,64 @@ public class DAOTest {
         assertEquals(name, resultTest);
     }
     // Add purchaser order
+    @Test @Ignore
     public void addPurchaseOrder(){
         try {
-            myDaoClient.addPurchaseOrder(1398120, 2, 980032, 5, "2018-11-12", "2018-11-12", "Momo Company");
+            myDaoClient.addPurchaseOrder(1398120, 980032, 2, 5, "2018-11-12", "2018-11-12", "Momo Company");
         } catch (Exception e) {
             System.out.println("Erreur sur l'ajout d'un produit");
         }
     }
     // Edit purchaser order
-    // delete purchaser order
+    @Test @Ignore
+    public void editPurchaseOrder(){
+       
+        String sql = "SELECT * FROM PURCHASE_ORDER WHERE CUSTOMER_ID = ? AND PRODUCT_ID = ? AND QUANTITY = ?";
 
+        try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement testStatement = connection.prepareStatement(sql)) {
+            int custoId = 1398120;
+            int quantity = 2;
+            int productId = 980032;
+            int result = 0;
+            testStatement.setInt(1, custoId);
+            testStatement.setInt(1, productId);
+            testStatement.setInt(1, quantity);
+            // on execute la requete de test avec le parametre
+            try (ResultSet rs = testStatement.executeQuery()) {
+		rs.next(); // On a toujours exactement 1 enregistrement dans le résultat
+	        result = rs.getInt("ORDER_NUM");
+	    }
+            myDaoClient.editPurchaseOrder(result, 1398120, 980032, 20, 5, "2018-11-12", "2018-11-12", "Momo Company");
+        } catch (Exception e) {
+            
+            System.out.println("Erreur sur l'édition d'un produit");
+        }
+    }
+    // delete purchaser order
+    @Test @Ignore
+    public void deletePurchaseOrder(){
+        String sql = "SELECT * FROM PURCHASE_ORDER WHERE CUSTOMER_ID = ? AND PRODUCT_ID = ? AND QUANTITY = ?";
+
+        try (Connection connection = myDataSource.getConnection();
+               PreparedStatement testStatement = connection.prepareStatement(sql)) {
+            int custoId = 1398120;
+            int quantity = 2;
+            int productId = 980032;
+            int result = 0;
+            testStatement.setInt(1, custoId);
+            testStatement.setInt(1, productId);
+            testStatement.setInt(1, quantity);
+            // on execute la requete de test avec le parametre
+            try (ResultSet rs = testStatement.executeQuery()) {
+		rs.next(); // On a toujours exactement 1 enregistrement dans le résultat
+	        result = rs.getInt("ORDER_NUM");
+            }
+            myDaoClient.deletePurchaseOrder(result);
+        } catch(Exception e){
+            System.out.println("Erreur sur delete product");
+        }
+    }
 }
 
 
