@@ -256,10 +256,13 @@ public class DAOclient {
                 while (rs.next()){ // On récupere la liste des codes de discount
                     
                     //A MODIFIERRRRRRRRR
-                    String resultString = rs.getString("DISCOUNT_CODE");
-                    float resultFloat = rs.getFloat("RATE");
+                    int order_num = rs.getInt("ORDER_NUM");
+                    int product_id = rs.getInt("RATE");
+                    int quantite = rs.getInt("RATE");
+                    float final_cost = rs.getFloat("RATE");
+                    String sales_date = rs.getString("RATE");
                     // On crée l'objet DiscountCodeEntity
-                    PurchaseOrder discCode = new PurchaseOrder(resultString, resultFloat);
+                    PurchaseOrder discCode = new PurchaseOrder(order_num, product_id,quantite,final_cost,sales_date);
                     // On l'ajoute à la liste des résultats
                     result.add(discCode);
                 }
@@ -275,7 +278,7 @@ public class DAOclient {
     
     
    
-            
+    }           
 }
 
 
