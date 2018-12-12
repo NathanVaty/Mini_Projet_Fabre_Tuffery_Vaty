@@ -50,12 +50,12 @@ public class AdminController extends HttpServlet {
          
         try {
             DAOadmin daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
-	    request.setAttribute("productId", daoAdmin.listAllProduct());
+	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
 	    switch (action) {
 	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
 		daoAdmin.insertProduct(Integer.valueOf(codeFabricant), codeProduit, Float.valueOf(prixAchat), Integer.valueOf(stock), Float.valueOf(marge), Boolean.valueOf(dispo), descproduit);
                 request.setAttribute("message", "Produit  Ajouté");
-		request.setAttribute("codes", daoAdmin.listAllProduct());	
+		request.setAttribute("listProduct", daoAdmin.listAllProduct());	
                 break;
             case "DELETE": // Requête de suppression (vient du lien hypertexte)
 		//try {

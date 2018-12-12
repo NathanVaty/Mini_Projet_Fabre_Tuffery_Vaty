@@ -34,7 +34,7 @@
         <div>
             <table border="1">
                 <tr><th>Id du produit</th><th>Id du fabricant</th><th>Code produit</th><th>Prix achat</th><th>Stock</th><th>Marge</th><th>Disponibilite</th><th>Description</th></tr>
-                <c:forEach var="list" items="${codes}">
+                <c:forEach var="list" items="${listProduct}">
                     <tr>
                         <td>${list.productId}</td>
                         <td>${list.manuId}</td>
