@@ -16,7 +16,7 @@
         <hr/>
         <p>
             Identifiez vous:<br/>
-        <form method='POST' action='view/loginjsp.jsp'>
+        <form method='POST'>
             ID: <input type="text" name="login"/><br/>
             mdp: <input type="password" name="mdp"><br/>
             <input type="submit" value="Connexion">
