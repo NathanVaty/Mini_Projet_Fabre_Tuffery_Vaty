@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
@@ -22,6 +24,7 @@ public class DAOclient {
     protected final DataSource myDataSource;
     private final String mess1 = "Customer inconnu";
     private final String mess2 = "Purchase Order inconnu";
+    
     
     public DAOclient(DataSource dataSource){
         this.myDataSource = dataSource;
@@ -241,6 +244,37 @@ public class DAOclient {
                 }
         return result;
     }
+    
+    public List<PurchaseOrder> listeOrder() throws SQLException{
+        List<PurchaseOrder> result = new LinkedList<>();
+        String rqSqlListDiscount = "SELECT * FROM PURCHASE_ORDER";
+        
+        try (	Connection connection = myDataSource.getConnection();
+		     PreparedStatement stmt = connection.prepareStatement(rqSqlListDiscount)){
+            try (ResultSet rs = stmt.executeQuery()) { 
+                
+                while (rs.next()){ // On récupere la liste des codes de discount
+                    
+                    //A MODIFIERRRRRRRRR
+                    String resultString = rs.getString("DISCOUNT_CODE");
+                    float resultFloat = rs.getFloat("RATE");
+                    // On crée l'objet DiscountCodeEntity
+                    PurchaseOrder discCode = new PurchaseOrder(resultString, resultFloat);
+                    // On l'ajoute à la liste des résultats
+                    result.add(discCode);
+                }
+                
+            } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                    Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+            }
+        
+        
+        return result;
+    }
+    
+    
+   
             
 }
 
