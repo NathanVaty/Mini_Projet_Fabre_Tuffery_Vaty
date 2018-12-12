@@ -52,7 +52,7 @@ public class DAOTest {
         resultAttendu.put("CB", 2905.050000);
         resultAttendu.put("FW", 4272.885000);
         resultAttendu.put("HW", 282546.390000);
-        resultAttendu.put("SW", 237855.098800); // faux
+        resultAttendu.put("SW", 179916.0988);
         
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -89,14 +89,14 @@ public class DAOTest {
          HashMap<String,Double> resultAttendu = new HashMap<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("10095",48727.5); // FAux
+         resultAttendu.put("10095",445.0);
          resultAttendu.put("10096",53039.55);
          resultAttendu.put("12347",557.535);
          resultAttendu.put("48124",6963.375);
          resultAttendu.put("48128",170026.05);
          resultAttendu.put("94401",66810.6);
          resultAttendu.put("95035",130501.8388);
-         resultAttendu.put("95117",57916.35); // FAUX
+         resultAttendu.put("95117",48259.850);
          
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -120,7 +120,7 @@ public class DAOTest {
     /**
      * Méthode de test pour obtenir le CA selon un client
      */
-    @Test @Ignore
+    @Test  @Ignore
     public void testCAClient() {
          // variable locale
          String dateDeb = "2011-05-24";
@@ -132,13 +132,13 @@ public class DAOTest {
          HashMap<String,Double> resultAttendu = new HashMap<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("1",13460.85); // faux
+         resultAttendu.put("1",3804.35);
          resultAttendu.put("2",125902.8388);
          resultAttendu.put("3",557.535);
          resultAttendu.put("36",60934.8);
          resultAttendu.put("106",4599.0);
          resultAttendu.put("149",44455.5);
-         resultAttendu.put("409",48727.5); //Faux
+         resultAttendu.put("409",445.0);
          resultAttendu.put("410",53039.55);
          resultAttendu.put("722",6963.375);
          resultAttendu.put("753",168079.8);
@@ -165,7 +165,7 @@ public class DAOTest {
         assertEquals(valide, true);
     }
     
-    @Test @Ignore
+    @Test  @Ignore
     public void testInsertProduct() {
         // TODO Implementer + changer val retour
         try {
@@ -181,7 +181,7 @@ public class DAOTest {
         
     }
     
-    @Test @Ignore
+    @Test  @Ignore
     public void testUpdateProduct(){
         //TODO implementer + changer val retour
         //updateProduct(int productID, int manufactID,String prodCode, double prodCost,
@@ -209,7 +209,7 @@ public class DAOTest {
     @Test @Ignore
     public void testDeleteProductExist(){
        try{
-            myDaoAdmin.deleteProduct(19985678);
+            myDaoAdmin.deleteProduct(980001);
             System.out.println("Le produit a été supprimé");
        } catch (Exception e) {
             fail();
@@ -229,7 +229,7 @@ public class DAOTest {
     
     /* ====================================================================== */
     /* ======================== Test Client ================================= */
-    @Test @Ignore
+    @Test  @Ignore
     public void testEditCustomer() throws SQLException, Exception{
         // On test le changement de nom sur le premier client
         int customerId = 1;
@@ -323,6 +323,9 @@ public class DAOTest {
         }
     }
 }
+
+
+
 
 
 
