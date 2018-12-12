@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import modele.DataSourceFactory;
  *
  * @author Nathan Vaty
  */
+@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
 public class LoginController extends HttpServlet {
 
     /**
@@ -46,9 +48,10 @@ public class LoginController extends HttpServlet {
                         request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
                         break;
                     case "client": 
+                        request.setAttribute("CustomerID", mdp);
                         request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
                         break;
-                    default: request.getRequestDispatcher("view/loginjsp.jsp").forward(request, response);
+                    default: 
                         break;
             }         
             
@@ -105,6 +108,9 @@ public class LoginController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
 
 
 
