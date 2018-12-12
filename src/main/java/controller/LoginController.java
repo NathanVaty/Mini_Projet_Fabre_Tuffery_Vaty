@@ -7,10 +7,15 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modele.DAOConnexion;
+import modele.DataSourceFactory;
 
 /**
  *
@@ -28,11 +33,28 @@ public class LoginController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            request.getRequestDispatcher("view/loginjsp.jsp").forward(request, response);
+        DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
+        String login = request.getParameter("login");
+        String mdp = request.getParameter("mdp");
+        String modeCo;
+        if(login != null && mdp != null) {
+            modeCo = connexion.connexion(login, mdp);
+            switch(modeCo){
+                case "admin":
+                        request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
+                        break;
+                    case "client": 
+                        request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
+                        break;
+                    default: request.getRequestDispatcher("view/loginjsp.jsp").forward(request, response);
+                        break;
+            }         
+            
         }
+        request.getRequestDispatcher("view/loginjsp.jsp").forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -47,7 +69,11 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -61,7 +87,11 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -75,5 +105,11 @@ public class LoginController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
+
+
 
 

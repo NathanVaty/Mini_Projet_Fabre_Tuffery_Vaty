@@ -226,7 +226,7 @@ public class DAOadmin {
 			
                         // On execute la requete
 			stmt.executeUpdate();
-
+                        connection.commit();
 		}  catch (SQLException ex) {
                     System.out.println(ex.getMessage());
                     Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
@@ -277,5 +277,6 @@ public class DAOadmin {
         return result;
     }
 }
+
 
 
