@@ -256,7 +256,7 @@ public class DAOclient {
         String rqSqlListDiscount = "SELECT PO.ORDER_NUM,PO.PRODUCT_ID,PO.QUANTITY,PO.SALES_DATE,SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS TOTAL"
                 + " FROM PURCHASE_ORDER PO"
                 + "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID"
-                + "JOIN PRODUCT_CODE PC ON PC.PROD_COD = P.PRODUCT_CODE"
+                + "JOIN PRODUCT_CODE PC ON PC.PROD_CODE = P.PRODUCT_CODE"
                 + "JOIN DISCOUNT_CODE D ON D.DISCOUNT_CODE = PC.DISCOUNT_CODE"
                 + "WHERE CUSTOMER_ID = ?"
                 + "GROUP BY PO.ORDER_NUM,PO.PRODUCT_ID,PO.QUANTITY,PO.SALES_DATE";
@@ -264,33 +264,31 @@ public class DAOclient {
         try (	Connection connection = myDataSource.getConnection();
 		     PreparedStatement stmt = connection.prepareStatement(rqSqlListDiscount)){
             
-                    stmt.setInt(1, customerID);
-                    ResultSet rs ;
-                    rs = stmt.executeQuery();
-                
-                
-                
-                while (rs.next()){ // On récupere la liste des codes de discount
+             stmt.setInt(1, customerID);
+            try(ResultSet rs = stmt.executeQuery()){
+
+                while (rs.next()){ // On récupere la liste des purchase order
                     
-                    int order_num = rs.getInt("ORDER_NUM");
-                    int product_id = rs.getInt("PRODUCT_ID");
-                    int quantite = rs.getInt("QUANTITY");
-                    String sales_date = rs.getString("SALES_DATE");
-                    float final_cost = rs.getFloat("TOTAL");
+                    int orderNum = rs.getInt("PO.ORDER_NUM");
+                    int productId = rs.getInt("PO.PRODUCT_ID");
+                    int quantite = rs.getInt("PO.QUANTITY");
+                    String salesDate = rs.getString("PO.SALES_DATE");
+                    float finalCost = rs.getFloat("TOTAL");
                     // On crée l'objet DiscountCodeEntity
-                    PurchaseOrder discCode = new PurchaseOrder(order_num, product_id,quantite,final_cost,sales_date);
+                    PurchaseOrder discCode = new PurchaseOrder(orderNum, productId,quantite,finalCost,salesDate);
                     // On l'ajoute à la liste des résultats
                     result.add(discCode);
+                    
                 }
                 
-                
+            } 
             } catch (SQLException ex) {
                     System.out.println(ex.getMessage());
                     Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
             }
+
+         return result;
         
-        
-        return result;
     }
     
     
