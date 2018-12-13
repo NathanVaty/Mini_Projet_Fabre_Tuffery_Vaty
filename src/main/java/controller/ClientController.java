@@ -45,12 +45,11 @@ public class ClientController extends HttpServlet {
         int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));;
         
         try {
-            DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
-	    
-            List<PurchaseOrder> listeO = null ;
-            //List<PurchaseOrder> listeO = daoclient.listeOrder(customerId) ;
             
-            request.setAttribute("listePO", listeO);
+            DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+
+            request.setAttribute("listePO", daoclient.listeOrder(2));
+            
 	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
             
         } catch (Exception ex) {
