@@ -9,10 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import javax.sql.DataSource;
 import modele.DAOadmin;
 import modele.DAOclient;
 import modele.DataSourceFactory;
+import modele.PurchaseOrder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -321,6 +324,28 @@ public class DAOTest {
         } catch(Exception e){
             System.out.println("Erreur sur delete product");
         }
+    }
+    @Test
+    public void listPurchaseOrder() throws SQLException{
+        List<PurchaseOrder> resultAttendu = new LinkedList<>();
+        List<PurchaseOrder> result = new LinkedList<>();
+        boolean valide = true;
+        PurchaseOrder val1 = new PurchaseOrder(10398002, 980005, 8, (float)82247.038800, "2011-05-24");
+        PurchaseOrder val2 = new PurchaseOrder(10398003, 980025, 25, (float) 44290.790000, "2011-05-24");
+        resultAttendu.add(val1);
+        resultAttendu.add(val2);
+        System.out.println(resultAttendu.toString());
+        
+        result = myDaoClient.listeOrder(2);
+        System.out.println(resultAttendu.toString());
+        if (result.equals(resultAttendu)) {
+            System.out.println("CA GRAND MERE LES VALEURS SONT BONNE");
+            valide = true;
+           } else {
+               System.out.println("Erreur une valeur est fausse");
+               valide = false;
+           }
+        
     }
 }
 
