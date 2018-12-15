@@ -41,7 +41,7 @@ public class DAOadmin {
      */
     public HashMap<String,Double> CAofCategorie(String dateDeb, String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-        String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA " +
+        String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA " +
                         "FROM PRODUCT_CODE PC " +
                         "JOIN PRODUCT P ON P.PRODUCT_CODE = PC.PROD_CODE " +
                         "JOIN PURCHASE_ORDER PO ON PO.PRODUCT_ID = P.PRODUCT_ID " +
@@ -75,7 +75,7 @@ public class DAOadmin {
      */
     public HashMap<String,Double> CAofZoneGeo(String dateDeb, String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-        String rqtPC = "SELECT MK.ZIP_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
+        String rqtPC = "SELECT MK.ZIP_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA\n" +
                         "FROM MICRO_MARKET MK\n" +
                         "JOIN CUSTOMER C ON C.ZIP = MK.ZIP_CODE\n" +
                         "JOIN PURCHASE_ORDER PO ON PO.CUSTOMER_ID = C.CUSTOMER_ID\n" +
@@ -109,7 +109,7 @@ public class DAOadmin {
      */
     public HashMap<String,Double> CAfromClient(String dateDeb,String dateFin) {
        HashMap<String,Double> chiffreAff = new HashMap<>();
-        String rqtPC = "SELECT C.CUSTOMER_ID, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))) AS CA\n" +
+        String rqtPC = "SELECT C.CUSTOMER_ID, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA\n" +
                         "FROM CUSTOMER C\n" +
                         "JOIN PURCHASE_ORDER PO ON PO.CUSTOMER_ID = C.CUSTOMER_ID\n" +
                         "JOIN PRODUCT P ON P.PRODUCT_ID = PO.PRODUCT_ID\n" +
@@ -178,6 +178,7 @@ public class DAOadmin {
     
     /**
      * Modifier un produit
+     * @param productID
      * @param manufactID
      * @param prodCode
      * @param prodCost
@@ -185,7 +186,6 @@ public class DAOadmin {
      * @param markup
      * @param dispo
      * @param desc
-     * @return 
      */
     public void updateProduct(int productID, int manufactID,String prodCode, double prodCost,
                     int quantite, double markup, boolean dispo, String desc) {
@@ -307,6 +307,8 @@ public class DAOadmin {
 		return result ;              
     }
 }
+
+
 
 
 

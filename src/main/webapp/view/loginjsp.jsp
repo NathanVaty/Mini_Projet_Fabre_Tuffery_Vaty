@@ -19,7 +19,7 @@
         <form method='POST'>
             ID: <input type="text" name="login"/><br/>
             mdp: <input type="password" name="mdp"><br/>
-            <input type="submit" value="Connexion">
+            <input type="submit" name="action" value="Connexion">
         </form>
         </p>
     </body>

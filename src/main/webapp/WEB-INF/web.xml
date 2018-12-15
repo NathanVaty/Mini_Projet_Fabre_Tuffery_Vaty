@@ -12,6 +12,10 @@
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.LoginController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LeBonCoteController</servlet-name>
+        <servlet-class>controller.LeBonCoteController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ClientController</servlet-name>
         <url-pattern>/ClientController</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/LoginController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LeBonCoteController</servlet-name>
+        <url-pattern>/LeBonCoteController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

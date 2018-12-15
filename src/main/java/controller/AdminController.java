@@ -58,7 +58,8 @@ public class AdminController extends HttpServlet {
 	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
 	    switch (action) {
 	    case "ajouter": // Requête d'ajout (vient du formulaire de saisie)
-		daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Float.parseFloat(prixAchat), Integer.parseInt(stock), Float.parseFloat(marge), Boolean.parseBoolean(dispo), descproduit);
+		//daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Float.parseFloat(prixAchat), Integer.parseInt(stock), Float.parseFloat(marge), Boolean.parseBoolean(dispo), descproduit);
+                daoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,true,"Produit test insertion Admin");
                 request.setAttribute("message","Code " + idProduit + " Ajouté");
 		request.setAttribute("listProduct", daoAdmin.listAllProduct());	
                 break;
@@ -122,5 +123,6 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+
 
 
