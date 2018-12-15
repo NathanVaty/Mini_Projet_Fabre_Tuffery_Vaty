@@ -38,11 +38,11 @@ public class ClientController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-	action = (action == null) ? "" : action;
+        //String action = request.getParameter("action");
+	//action = (action == null) ? "" : action;
         
         
-        int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));;
+        //int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
         
         try {
             
