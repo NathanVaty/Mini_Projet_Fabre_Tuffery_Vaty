@@ -29,6 +29,27 @@ public class PurchaseOrder {
         this.salesDate = sales_date;
 
     }
+
+    public int getOrderNum() {
+        return orderNum;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public int getQuantite() {
+        return quantite;
+    }
+
+    public float getFinalCost() {
+        return finalCost;
+    }
+
+    public String getSalesDate() {
+        return salesDate;
+    }
     
     
 }
+

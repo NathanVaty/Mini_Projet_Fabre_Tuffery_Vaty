@@ -21,16 +21,17 @@
                                 
                         <c:otherwise> <%-- On a trouvé --%>
                             
-                            <h1>${customerId}</h1>
+                            
                             <a href="clientEdit.jsp">Editer mes données personnelles</a>
                
                             <a href="clientAjout.jsp">Ajouter une commande</a>
                             
+                            
 			    <table border=2>
                                 <%-- On affiche un tableau avec les codes --%>
                                 <tr> <th>Code Produit</th> <th>Quantité</th><th>Prix</th><th>Date</th><th>Modifier</th><th>Supprimer</th></tr>           
-                                <c:forEach var="purchaseOrder" items="${listPurchaseOrder}">
-                                    <tr><td>${purchaseOrder.product_id}</td><td>${purchaseOrder.quantity}</td><td>${purchaseOrder.shipping_cost}</td><td>${purchaseOrder.sales_date}</td><td><a href="orderModif">Modifier</a></td><td><a href="?action=DELETE&code=${purchaseOrder.order_Num}">Supprimer</a></td></tr>
+                                <c:forEach var="purchaseOrder" items="${listePO}">
+                                    <tr><td>${purchaseOrder.productId}</td><td>${purchaseOrder.quantite}</td><td>${purchaseOrder.finalCost}</td><td>${purchaseOrder.salesDate}</td><td><a href="orderModif">Modifier</a></td><td><a href="?action=DELETE&code=${purchaseOrder.order_Num}">Supprimer</a></td></tr>
                                 </c:forEach>      
                             </table>
 			</c:otherwise>

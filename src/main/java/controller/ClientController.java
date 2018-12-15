@@ -7,6 +7,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modele.DAOclient;
 import modele.DataSourceFactory;
+import modele.PurchaseOrder;
 
 /**
  *
@@ -38,11 +40,18 @@ public class ClientController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 	action = (action == null) ? "" : action;
-        int customerId = Integer.parseInt(request.getParameter("CustomerID"));
+        
+        
+        int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));;
+        
         try {
+            
             DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
-	    
-	    
+
+            request.setAttribute("listePO", daoclient.listeOrder(2));
+            
+	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
+            
         } catch (Exception ex) {
             Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
             request.setAttribute("message", ex.getMessage());
