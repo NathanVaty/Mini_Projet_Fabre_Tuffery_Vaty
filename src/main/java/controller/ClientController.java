@@ -7,6 +7,8 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,17 +39,26 @@ public class ClientController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         //String action = request.getParameter("action");
 	//action = (action == null) ? "" : action;
         
-        
+        String action = request.getParameter("action");
         int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
         DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+        String code = request.getParameter("code");
+        List<PurchaseOrder> listePO = daoclient.listeOrder(2);
+        
         try { 
-
-            request.setAttribute("listePO", daoclient.listeOrder(2));
+            if(action != null) {
+                    if (action.equals("DELETE")) {
+                    request.setAttribute("code",code);
+                    daoclient.deletePurchaseOrder(Integer.parseInt(code));
+                    listePO = daoclient.listeOrder(2);
+                }
+            }
             
+            request.setAttribute("listePO", listePO);
 	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
             
         } catch (Exception ex) {
@@ -71,7 +82,11 @@ public class ClientController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -85,7 +100,11 @@ public class ClientController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
