@@ -271,7 +271,7 @@ public class DAOTest {
     @Test @Ignore
     public void addPurchaseOrder(){
         try {
-            myDaoClient.addPurchaseOrder(1398120, 980032, 2, 5, "2018-11-12", "2018-11-12", "Momo Company");
+            myDaoClient.addPurchaseOrder(2, 980032, 2, 5., "2018-11-12", "2018-11-12", "Momo Company");
         } catch (Exception e) {
             System.out.println("Erreur sur l'ajout d'un produit");
         }

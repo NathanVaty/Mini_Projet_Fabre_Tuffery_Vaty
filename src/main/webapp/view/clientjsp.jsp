@@ -18,7 +18,6 @@
                
                             <a href="?action=ADD&code=${customerId}">Ajouter une commande</a>
                             
-                            test : ${listePo.productId}
 			    <table border=2>
                                 <%-- On affiche un tableau avec les codes --%>
                                 <tr> <th>Code Produit</th> <th>Quantité</th><th>Prix</th><th>Date</th><th>Modifier</th><th>Supprimer</th></tr>           

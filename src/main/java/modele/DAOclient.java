@@ -91,7 +91,7 @@ public class DAOclient {
      * @param freightCompany 
      * @throws java.lang.Exception 
      */
-    public void addPurchaseOrder(int customerId ,int productId,int quantite, float shippingCost, String salesDate,
+    public void addPurchaseOrder(int customerId ,int productId,int quantite, Double shippingCost, String salesDate,
                                  String shippingDate, String freightCompany)throws Exception {
         
         String sql = "INSERT INTO PURCHASE_ORDER(ORDER_NUM,CUSTOMER_ID, PRODUCT_ID, QUANTITY, SHIPPING_COST, SALES_DATE, SHIPPING_DATE, FREIGHT_COMPANY) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
@@ -110,7 +110,7 @@ public class DAOclient {
              discountStatement.setInt(2, customerId);
              discountStatement.setInt(3, productId);
              discountStatement.setInt(4, quantite);
-             discountStatement.setFloat(5, shippingCost);
+             discountStatement.setDouble(5, shippingCost);
              discountStatement.setString(6, salesDate);
              discountStatement.setString(7, shippingDate);
              discountStatement.setString(8, freightCompany);
