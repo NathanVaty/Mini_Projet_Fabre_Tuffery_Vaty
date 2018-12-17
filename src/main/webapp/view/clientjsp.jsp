@@ -3,7 +3,9 @@
     Created on : 11 déc. 2018, 11:34:36
     Author     : morga
 --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,10 +15,7 @@
     </head>
     <body>
         <h1>Display Client</h1>
-		
 
-                               <%-- On a trouvé --%>
-                            
                             
                             <a href="clientEdit.jsp">Editer mes données personnelles</a>
                
@@ -31,9 +30,7 @@
                                         <td>${purchaseOrder.quantite}</td>
                                         <td>${purchaseOrder.finalCost}</td>
                                         <td>${purchaseOrder.salesDate}</td>
-                                        <td><a href="orderModif">Modifier</a></td>
-                                        <td><a href="?action=DELETE&code=${purchaseOrder.orderNum}">Supprimer</a></td>
-                                    </tr>
+                                        <td><a href="orderModif">Modifier</a></td><td><a href="?action=DELETE&code=${purchaseOrder.orderNum}">Supprimer</a></td></tr>
                                 </c:forEach>      
                             </table>
 		<br>
