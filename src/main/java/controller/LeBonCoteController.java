@@ -15,7 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.BeforeCompletion;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
  *
  * @author Nathan Vaty
  */
+@WebServlet(name = "LeBonCoteController", urlPatterns = {"/LeBonCoteController"})
 public class LeBonCoteController extends HttpServlet {
 
     /**
@@ -46,7 +49,9 @@ public class LeBonCoteController extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         if (actionIs(request,"DELETEP")) {
-            
+            adminJSP(request,response);
+        } else if (actionIs(request, "ADDP")) {
+            adminJSP(request,response);
         }
         if (actionIs(request,"Connexion")) {
             DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
@@ -63,7 +68,7 @@ public class LeBonCoteController extends HttpServlet {
                     case "client":
                         clientJSP(request,response,mdp);
                         break;
-                    default:
+                    default: 
                         break;
                 }
                 
@@ -123,7 +128,6 @@ public class LeBonCoteController extends HttpServlet {
         actionCA = (action == null) ? "" : actionCA;
         String dateDeb = request.getParameter("dateDeb");
         String dateFin = request.getParameter("dateFin");
-        String idProduit = request.getParameter("idProduit");
         String codeFabricant = request.getParameter("manuId");
         String codeProduit = request.getParameter("productCode");
         String prixAchat = request.getParameter("purchaseCost");
@@ -133,25 +137,32 @@ public class LeBonCoteController extends HttpServlet {
         String descproduit = request.getParameter("descProd");
         List<ListCA> resultCa = new LinkedList<>();
         JSONObject json;
-        
+        DataSource myDataSource = DataSourceFactory.getDataSource();
         DAOadmin daoAdmin; //DAO de l'admin
-        daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
+        daoAdmin = new DAOadmin(myDataSource);
         
         try {
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
-                case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Double.parseDouble(prixAchat), Integer.parseInt(stock), Double.parseDouble(marge), dispo, descproduit);
-                    request.setAttribute("message","Code " + idProduit + " Ajouté");
-                    request.setAttribute("listProduct", daoAdmin.listAllProduct());
+                case "ADDP": // Requête d'ajout (vient du formulaire de saisie)
+                    //request.setAttribute("codeF",Integer.parseInt(codeFabricant));
+                    //request.setAttribute("codeP",codeProduit);
+                    //request.setAttribute("prixA", Float.parseFloat(prixAchat));
+                    //request.setAttribute("stock",Integer.parseInt(stock));
+                    //request.setAttribute("marge",Float.parseFloat(marge));
+                    //request.setAttribute("dispo", dispo.toUpperCase());
+                    //request.setAttribute("desc",descproduit);
+                    //daoAdmin.insertProduct(19985678,"SW",234.0,10,10.5,"TRUE","A Supp");
+                   daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
+                           Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                           Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
                     break;
                 case "DELETE": // Requête de suppression (vient du lien hypertexte)
                     try {
-                        daoAdmin.deleteProduct(Integer.parseInt(idProduit));
-                        request.setAttribute("message", "Code " + idProduit + " Supprimé");
+                        //daoAdmin.deleteProduct(Integer.parseInt(idProduit));
                         request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     } catch (SQLIntegrityConstraintViolationException e) {
-                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+                        //request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
                     }
                     break;
             }
@@ -228,23 +239,6 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
