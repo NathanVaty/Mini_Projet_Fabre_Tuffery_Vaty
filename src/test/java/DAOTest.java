@@ -51,12 +51,12 @@ public class DAOTest {
         boolean valide = true;
         List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
         
-        HashMap<String,Double> resultAttendu = new HashMap<>();
-        resultAttendu.put("BK", 6963.375000);
-        resultAttendu.put("CB", 2905.050000);
-        resultAttendu.put("FW", 4272.885000);
-        resultAttendu.put("HW", 282546.390000);
-        resultAttendu.put("SW", 179916.0988);
+        List<ListCA> resultAttendu = new LinkedList<>();
+        resultAttendu.add(new ListCA("BK", 6963.375000));
+        resultAttendu.add(new ListCA("CB", 2905.050000));
+        resultAttendu.add(new ListCA("FW", 4272.885000));
+        resultAttendu.add(new ListCA("HW", 282546.390000));
+        resultAttendu.add(new ListCA("SW", 179916.0988));
         
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -90,17 +90,17 @@ public class DAOTest {
         List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
          
          // HashMap de retour
-         HashMap<String,Double> resultAttendu = new HashMap<>();
+         List<ListCA> resultAttendu = new LinkedList<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("10095",445.0);
-         resultAttendu.put("10096",53039.55);
-         resultAttendu.put("12347",557.535);
-         resultAttendu.put("48124",6963.375);
-         resultAttendu.put("48128",170026.05);
-         resultAttendu.put("94401",66810.6);
-         resultAttendu.put("95035",130501.8388);
-         resultAttendu.put("95117",48259.850);
+         resultAttendu.add(new ListCA("10095",445.0));
+         resultAttendu.add(new ListCA("10096",53039.55));
+         resultAttendu.add(new ListCA("12347",557.535));
+         resultAttendu.add(new ListCA("48124",6963.375));
+         resultAttendu.add(new ListCA("48128",170026.05));
+         resultAttendu.add(new ListCA("94401",66810.6));
+         resultAttendu.add(new ListCA("95035",130501.8388));
+         resultAttendu.add(new ListCA("95117",48259.850));
          
         // Vérification du contenu de la table crée
         for(String key : result.keySet()){
@@ -133,23 +133,25 @@ public class DAOTest {
         List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
          
          // HashMap de retour
-         HashMap<String,Double> resultAttendu = new HashMap<>();
+         List<ListCA> resultAttendu = new LinkedList<>();
          
          // valleur attendu dans la hashmap
-         resultAttendu.put("1",3804.35);
-         resultAttendu.put("2",125902.8388);
-         resultAttendu.put("3",557.535);
-         resultAttendu.put("36",60934.8);
-         resultAttendu.put("106",4599.0);
-         resultAttendu.put("149",44455.5);
-         resultAttendu.put("409",445.0);
-         resultAttendu.put("410",53039.55);
-         resultAttendu.put("722",6963.375);
-         resultAttendu.put("753",168079.8);
-         resultAttendu.put("777",1946.25); 
-         resultAttendu.put("863",5875.8);
+         resultAttendu.add(new ListCA("1",3804.35));
+         resultAttendu.add(new ListCA("2",125902.8388));
+         resultAttendu.add(new ListCA("3",557.535));
+         resultAttendu.add(new ListCA("36",60934.8));
+         resultAttendu.add(new ListCA("106",4599.0));
+         resultAttendu.add(new ListCA("149",44455.5));
+         resultAttendu.add(new ListCA("409",445.0));
+         resultAttendu.add(new ListCA("410",53039.55));
+         resultAttendu.add(new ListCA("722",6963.375));
+         resultAttendu.add(new ListCA("753",168079.8));
+         resultAttendu.add(new ListCA("777",1946.25)); 
+         resultAttendu.add(new ListCA("863",5875.8));
          
         // Vérification du contenu de la table crée
+        
+        
         for(String key : result.keySet()){
            // On vérifie si la clé existe
            if (resultAttendu.containsKey(key)){
