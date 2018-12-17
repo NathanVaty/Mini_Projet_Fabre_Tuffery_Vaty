@@ -326,7 +326,7 @@ public class DAOTest {
             System.out.println("Erreur sur delete product");
         }
     }
-    @Test
+    @Test @Ignore 
     public void listPurchaseOrder() throws SQLException{
         List<PurchaseOrder> resultAttendu = new LinkedList<>();
         List<PurchaseOrder> result = new LinkedList<>();
