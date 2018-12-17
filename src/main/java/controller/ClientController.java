@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modele.DAOclient;
 import modele.DataSourceFactory;
-import modele.PurchaseOrder;
 
 /**
  *
@@ -41,16 +40,17 @@ public class ClientController extends HttpServlet {
         String action = request.getParameter("action");
 	action = (action == null) ? "" : action;
         
-        
         int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));;
-        
+        DAOclient daoclient;
+        daoclient = new DAOclient(DataSourceFactory.getDataSource());
+        System.out.println("Connection");
         try {
             
-            DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
-
+            
+            System.out.println("Envoie du daoclient.listeOrder");
             request.setAttribute("listePO", daoclient.listeOrder(2));
             
-	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
+	    
             
         } catch (Exception ex) {
             Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
@@ -58,7 +58,8 @@ public class ClientController extends HttpServlet {
 	} finally {
 
 	}
-        
+        System.out.println("Envoie des valeurs vers le jsp");
+        request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
         
         
     }
