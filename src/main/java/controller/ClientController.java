@@ -7,8 +7,13 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,9 +22,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modele.DAOadmin;
 import modele.DAOclient;
 import modele.DataSourceFactory;
-import modele.PurchaseOrder;
 
 /**
  *
@@ -42,19 +47,47 @@ public class ClientController extends HttpServlet {
             throws ServletException, IOException, SQLException {
         //String action = request.getParameter("action");
 	//action = (action == null) ? "" : action;
+        // Create an instance of SimpleDateFormat used for formatting 
+// the string representation of date (month/day/year)
+DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+// Get the date today using Calendar object.
+Date today = Calendar.getInstance().getTime();        
+// Using DateFormat format method we can create a string 
+// representation of a date with the defined format.
+String reportDate = df.format(today);
+
         
         String action = request.getParameter("action");
         int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
         DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+        DAOadmin daoAdmin; //DAO de l'admin
+        daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
+        String produit = request.getParameter("produit");
+        String quantite = request.getParameter("quantite");
         String code = request.getParameter("code");
         List<PurchaseOrder> listePO = daoclient.listeOrder(2);
         
         try { 
             if(action != null) {
-                    if (action.equals("DELETE")) {
+                if (action.equals("DELETE")) {
                     request.setAttribute("code",code);
                     daoclient.deletePurchaseOrder(Integer.parseInt(code));
                     listePO = daoclient.listeOrder(2);
+                } else if (action.equals("ADD")) {
+                    request.setAttribute("listProduct", daoAdmin.listAllProduct());
+                    request.getRequestDispatcher("view/addPo.jsp").forward(request, response);
+                } else if(action.equals("ADDPO")){
+                    
+                    
+                    request.setAttribute("idprod",produit);
+                    
+                    
+                } else if (action.equals("UPDATEPO")) {	
+                    request.getRequestDispatcher("view/updatePo.jsp").forward(request, response);
+                    
+                }else if (action.equals("UPDATECU")) {
+                    request.getRequestDispatcher("view/updateCu.jsp").forward(request, response);
                 }
             }
             
@@ -67,7 +100,10 @@ public class ClientController extends HttpServlet {
 	} finally {
 
 	}
-
+        System.out.println("Envoie des valeurs vers le jsp");
+        request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

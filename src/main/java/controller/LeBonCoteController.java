@@ -5,11 +5,14 @@
  */
 package controller;
 
+import entity.ListCA;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.BeforeCompletion;
@@ -132,7 +135,7 @@ public class LeBonCoteController extends HttpServlet {
         String marge = request.getParameter("markup");
         String dispo = request.getParameter("dispo");
         String descproduit = request.getParameter("descProd");
-        HashMap<String,Double> resultCa = new HashMap<>();
+        List<ListCA> resultCa = new LinkedList<>();
         JSONObject json;
         DataSource myDataSource = DataSourceFactory.getDataSource();
         DAOadmin daoAdmin; //DAO de l'admin

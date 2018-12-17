@@ -6,11 +6,13 @@
 package controller;
 
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import entity.ListCA;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.console;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -21,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modele.DAOadmin;
 import modele.DataSourceFactory;
-import org.json.JSONObject;
 
 /**
  *
@@ -41,12 +42,11 @@ public class AdminController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-	action = (action == null) ? "" : action; // Pour le switch qui n'aime pas les null
+        String action = request.getParameter("action");// Pour le switch qui n'aime pas les null
         String actionCA = request.getParameter("actionCA");
-        actionCA = (action == null) ? "" : actionCA;
         String dateDeb = request.getParameter("dateDeb");
         String dateFin = request.getParameter("dateFin");
+        String typeCA = request.getParameter("typeCA");
         String idProduit = request.getParameter("idProduit");
 	String codeFabricant = request.getParameter("manuId");
         String codeProduit = request.getParameter("productCode");
@@ -55,14 +55,12 @@ public class AdminController extends HttpServlet {
         String marge = request.getParameter("markup");
         String dispo = request.getParameter("dispo");
         String descproduit = request.getParameter("descProd");
-        HashMap<String,Double> resultCa = new HashMap<>();
-        JSONObject json;
+        List<ListCA> resultCa = new LinkedList<>();
         
         request.setAttribute("produit", idProduit);
         
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
-        
         try {    
 	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
 	    switch (action) {
@@ -83,24 +81,27 @@ public class AdminController extends HttpServlet {
                        daoAdmin.deleteProduct(Integer.parseInt(idProduit));
                        request.setAttribute("message", "Code " + idProduit + " Supprimé");
                        request.setAttribute("listProduct", daoAdmin.listAllProduct());									
-		} catch (SQLIntegrityConstraintViolationException e) {
-                    request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
-		}
-            break;
+                    } catch (SQLIntegrityConstraintViolationException e) {
+                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+                    }
+                }
             }
-            switch(actionCA){
-                case "caClient": // Cas du chiffre d'affaire par client
-                    resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
-                    json = new JSONObject(resultCa);
-                break;
-                case "caZoneGeo": // Cas du chiffre d'affaire par la zone geo
-                    resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
-                    json = new JSONObject(resultCa);
-                break;
-                case "caCat": // Cas du chiffre d'affaire par categorie
-                    resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
-                    json = new JSONObject(resultCa);
-                break;
+            if (actionCA != null){
+                if(typeCA.equals("caClient")){
+                    //resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAfromClient(dateDeb, dateFin));
+                     //json = new JSONObject(resultCa);
+                }
+                if(typeCA.equals("caZoneGeo")){
+                    //resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAofZoneGeo(dateDeb, dateFin));
+                    //json = new JSONObject(resultCa);
+                }
+                if(typeCA.equals("caCat")){
+                    //resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAofCategorie(dateDeb, dateFin));
+                    //json = new JSONObject(resultCa);
+                }
             }
 	} catch (Exception ex) {
             request.setAttribute("message", ex.getMessage());

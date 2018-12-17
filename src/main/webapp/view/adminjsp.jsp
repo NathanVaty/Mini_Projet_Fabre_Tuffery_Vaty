@@ -6,11 +6,56 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
+<%@ page import="com.google.gson.Gson"%>
+<%@ page import="com.google.gson.JsonObject"%>
+<%
+    Gson gsonObj = new Gson();
+    List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin Le bon cote</title>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1.0', {
+            'packages' : [ 'corechart' ]
+        });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+        // Create the data table.
+        var data = google.visualization.arrayToDataTable([
+               ['Pays', 'CA'],
+                <c:forEach items="${listCA}" var="entry">
+                       [ '${entry.key}', ${entry.value} ],
+                </c:forEach>
+        ]);
+
+        // Set chart options
+        var options = {
+            'title' : 'Chiffre d\'affaire ', //title which will be shown right above the Google Pie Chart
+            is3D : true, //render Google Pie Chart as 3D
+            pieSliceText: 'label', //on mouse hover show label or name of the Country
+            tooltip :  {showColorCode: true}, // whether to display color code for a Country on mouse hover
+            'width' : 600, //width of the Google Pie Chart
+            'height' : 300 //height of the Google Pie Chart
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
     </head>
     <body>
         <h1>Bievenue dans la section administrateur</h1>
@@ -61,9 +106,9 @@
             <h4>Graphique de la consomation</h4>
             <form>
                 <label for="dateDeb">Date de début :</label>
-                <input type="date" id="dateDeb" name="dateDebut">             
+                <input type="date" id="dateDeb" name="dateDebut" value="2011-05-24">             
                 <label for ="dateFin">Date de fin :</label>
-                <input type="date" id="dateFin" name="dateFin">
+                <input type="date" id="dateFin" name="dateFin" value="2011-05-24">
                 
                 <select name="typeCA">
                     <option value="caClient">Chiffre d'affaire Client</option>
@@ -71,11 +116,23 @@
                     <option value="caCat">Chiffre d'affaire Catégorie</option>
                 </select>
                 
-                <input type="submit" name="actionCA" value="afficher">
+                <input type="hidden" name="actionCA" value="afficher">
+                <input type="submit" value="Afficher">
+
             </form>
         </div>
-        <div>
+        <div style="width: 600px">
             <%-- Affichage du google chart --%>
+            <div id="chart_div"></div>
+            <table border="1">
+                <tr><th>Clé(pays,client,code produit)</th><th>Chiffre d'affaires</th></tr>
+                <c:forEach items="${listCA}" var="entry">
+                    <tr>
+                        <td>${entry.key}</td>
+                        <td>${entry.value}</td>
+                    </tr>
+                </c:forEach>
+            </table>
         </div>
     </body>
 </html>
