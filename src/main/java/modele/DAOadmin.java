@@ -138,6 +138,21 @@ public class DAOadmin {
         return chiffreAff;
     }
     
+    public int getProductKey() {
+        int key = 0;
+        String sql = "SELECT MAX(PRODUCT_ID) AS Cle FROM PRODUCT";
+        try (Connection connection = myDataSource.getConnection();
+                Statement stmt = connection.createStatement();   
+                ResultSet rs = stmt.executeQuery(sql) ) {
+                    if(rs.next()) {
+                        key = rs.getInt("Cle");
+                    }
+        } catch (SQLException e) {
+            
+        }
+        return key+1;
+    }
+    
     /**
      * Ajouter un produit
      * @param manufactID
@@ -178,20 +193,7 @@ public class DAOadmin {
          }
     }
     
-    public int getProductKey() {
-        int key = 0;
-        String sql = "SELECT MAX(PRODUCT_ID) AS Cle FROM PRODUCT";
-        try (Connection connection = myDataSource.getConnection();
-                Statement stmt = connection.createStatement();   
-                ResultSet rs = stmt.executeQuery(sql) ) {
-                    if(rs.next()) {
-                        key = rs.getInt("Cle");
-                    }
-        } catch (SQLException e) {
-            
-        }
-        return key+1;
-    }
+    
     
     /**
      * Modifier un produit
@@ -351,12 +353,4 @@ public class DAOadmin {
         return result;
     }
 }
-
-
-
-
-
-
-
-
 

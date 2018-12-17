@@ -9,16 +9,12 @@
 <%@ page import="java.util.*" %>
 <%@ page import="com.google.gson.Gson"%>
 <%@ page import="com.google.gson.JsonObject"%>
-<%
-    Gson gsonObj = new Gson();
-    List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin Le bon cote</title>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<!--        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
         // Load the Visualization API and the piechart package.
         google.load('visualization', '1.0', {
@@ -36,9 +32,6 @@
         // Create the data table.
         var data = google.visualization.arrayToDataTable([
                ['Pays', 'CA'],
-                <c:forEach items="${listCA}" var="entry">
-                       [ '${entry.key}', ${entry.value} ],
-                </c:forEach>
         ]);
 
         // Set chart options
@@ -55,7 +48,7 @@
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
     }
-</script>
+</script>-->
     </head>
     <body>
         <h1>Bievenue dans la section administrateur</h1>
