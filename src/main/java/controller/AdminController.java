@@ -67,9 +67,16 @@ public class AdminController extends HttpServlet {
 	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
 	    switch (action) {
 	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-		daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Double.parseDouble(prixAchat), Integer.parseInt(stock), Double.parseDouble(marge), Boolean.parseBoolean(dispo), descproduit);
-                request.setAttribute("message","Code " + idProduit + " Ajouté");
-		request.setAttribute("listProduct", daoAdmin.listAllProduct());	
+		request.setAttribute("codeF",Integer.parseInt(codeFabricant));
+                    request.setAttribute("codeP",codeProduit);
+                    request.setAttribute("prixA", Float.parseFloat(prixAchat));
+                    request.setAttribute("stock",Integer.parseInt(stock));
+                    request.setAttribute("marge",Float.parseFloat(marge));
+                    request.setAttribute("dispo", dispo.toUpperCase());
+                    request.setAttribute("desc",descproduit);
+                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
                 break;
             case "DELETE": // Requête de suppression (vient du lien hypertexte)
 		try {
@@ -144,6 +151,9 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
 
 
 

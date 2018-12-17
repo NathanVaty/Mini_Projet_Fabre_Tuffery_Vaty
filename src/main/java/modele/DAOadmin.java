@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -133,7 +134,7 @@ public class DAOadmin {
          
         return chiffreAff;
     }
-
+    
     /**
      * Ajouter un produit
      * @param manufactID
@@ -144,37 +145,49 @@ public class DAOadmin {
      * @param dispo
      * @param desc
      */
-    public void insertProduct(int manufactID,String prodCode, float prodCost,
-                    int quantite, float markup, String dispo, String desc) {
+   public void insertProduct(int manufactID,String prodCode, double prodCost,
+                    int quantite, double markup, String dispo, String desc) {
         String sql = "INSERT INTO PRODUCT "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
                  PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
              // On définit la valeur de paramètre
             
              //Génération automatique du prochain ordeNum
-             int orderNum = 0; //Numero du prochain orderNum
-             ResultSet clefs = discountStatement.getGeneratedKeys();
-             while(clefs.next()){
-                orderNum = clefs.getInt(1);
-             }
+             int productID = getProductKey();
              
-             discountStatement.setInt(1, orderNum);
+             discountStatement.setInt(1, productID);
              discountStatement.setInt(2, manufactID);
              discountStatement.setString(3, prodCode);
-             discountStatement.setFloat(4, prodCost);
+             discountStatement.setDouble(4, prodCost);
              discountStatement.setInt(5, quantite);
-             discountStatement.setFloat(6, markup);
+             discountStatement.setDouble(6, markup);
              discountStatement.setString(7, dispo);
              discountStatement.setString(8, desc);
              
              
              // On ajoute le code discount avec une requete
-             discountStatement.execute();
+             discountStatement.executeUpdate();
              connection.commit();
+             connection.close();
          } catch (SQLException ex) {
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
+    }
+    
+    public int getProductKey() {
+        int key = 0;
+        String sql = "SELECT MAX(PRODUCT_ID) AS Cle FROM PRODUCT";
+        try (Connection connection = myDataSource.getConnection();
+                Statement stmt = connection.createStatement();   
+                ResultSet rs = stmt.executeQuery(sql) ) {
+                    if(rs.next()) {
+                        key = rs.getInt("Cle");
+                    }
+        } catch (SQLException e) {
+            
+        }
+        return key+1;
     }
     
     /**
@@ -231,6 +244,7 @@ public class DAOadmin {
                         // On execute la requete
 			stmt.executeUpdate();
                         connection.commit();
+                        connection.close();
 		}  catch (SQLException ex) {
                     System.out.println(ex.getMessage());
                     Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
@@ -308,9 +322,6 @@ public class DAOadmin {
 		return result ;              
     }
 }
-
-
-
 
 
 

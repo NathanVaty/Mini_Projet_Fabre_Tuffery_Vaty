@@ -168,13 +168,15 @@ public class DAOTest {
         assertEquals(valide, true);
     }
     
-    @Test  @Ignore
+    @Test @Ignore
     public void testInsertProduct() {
         // TODO Implementer + changer val retour
         try {
-            myDaoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test");
+            myDaoAdmin.insertProduct(19985678,"SW",234.0,10,10.5,"TRUE","Produit de test2");
         } catch (Exception e) {
             System.out.println("Erreur sur l'insertion d'un produit");
+           System.out.println(e.getMessage());
+           e.printStackTrace();
             fail();
         }
         
@@ -346,6 +348,16 @@ public class DAOTest {
         assertEquals(valide,true);  
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

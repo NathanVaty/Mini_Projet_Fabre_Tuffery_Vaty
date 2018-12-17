@@ -30,7 +30,14 @@
                     
         </form>
         <%--  On montre un éventuel message d'erreur --%>
-	<div><h4>${message}</h4></div>
+	<div><h4>${codeF}</h4></div>
+        <div><h4>${codeP}</h4></div>
+        <div><h4>${prixA}</h4></div>
+        <div><h4>${stock}</h4></div>
+        <div><h4>${marge}</h4></div>
+        <div><h4>${dispo}</h4></div>
+        <div><h4>${desc}</h4></div>
+        <div><h4>${message}</h4></div>
         <%--  On montre La liste des produits --%>
         <div>
             <table border="1">

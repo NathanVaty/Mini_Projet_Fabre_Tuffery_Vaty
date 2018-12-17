@@ -58,7 +58,6 @@ public class DAOclient {
 
               
               
-              
              discountStatement.setString(1, zip);
              discountStatement.setString(2, name);
              discountStatement.setString(3, addressLine1);
