@@ -58,6 +58,8 @@ public class AdminController extends HttpServlet {
         HashMap<String,Double> resultCa = new HashMap<>();
         JSONObject json;
         
+        request.setAttribute("produit", idProduit);
+        
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
         
@@ -142,6 +144,8 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
 
 
 

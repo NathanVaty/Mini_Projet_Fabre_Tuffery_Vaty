@@ -57,9 +57,6 @@ public class DAOclient {
                  PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
 
               
-            if (!findCustomer(customerId)){
-                throw new Exception(mess1);
-            }   
               
               
              discountStatement.setString(1, zip);
@@ -293,6 +290,7 @@ public class DAOclient {
     
    
     }           
+
 
 
 

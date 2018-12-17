@@ -14,6 +14,7 @@
     </head>
     <body>
         <h1>Bievenue dans la section administrateur</h1>
+        <h2>${produit}</h2>
         <form method='GET'>
                     Id du fabricant : <input name="manuId" pattern="[0-9]{1}+" title="Un identifiant de fabricant"><br/>
                     Un code pour le produit : <input name="productCode" size="1" maxlength="2" pattern="[A-Z]{2}" title="Un code de produit"><br/>
@@ -25,7 +26,7 @@
                         <option value="false">Pas Disponible</option>
                         </select><br />
                     Description du produit : <textarea name="descProd" rows="3" cols="10" placeholder="Ecrivez votre description" title="une description de produit"></textarea><br/>
-                    <input type="submit" name="action" value="ADD">
+                    <input type="submit" name="action" value="ADDP">
                     
         </form>
         <%--  On montre un éventuel message d'erreur --%>
@@ -44,7 +45,7 @@
                         <td>${list.markup}</td>
                         <td>${list.available}</td>
                         <td>${list.desc}</td>
-                        <td><a href="?action=DELETE&idProduit=${list.productId}">delete</a></td>
+                        <td><a href="?action=DELETEP&idProduit=${list.productId}" >delete</a></td>
                     </tr>
                 </c:forEach> 
             </table> 

@@ -43,7 +43,9 @@ public class LeBonCoteController extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         if (actionIs(request,"DELETEP")) {
-            
+            adminJSP(request,response);
+        } else if (actionIs(request, "ADDP")) {
+            adminJSP(request,response);
         }
         if (actionIs(request,"Connexion")) {
             DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
@@ -60,7 +62,7 @@ public class LeBonCoteController extends HttpServlet {
                     case "client":
                         clientJSP(request,response,mdp);
                         break;
-                    default:
+                    default: 
                         break;
                 }
                 
@@ -137,10 +139,12 @@ public class LeBonCoteController extends HttpServlet {
         try {
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
-                case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Double.parseDouble(prixAchat), Integer.parseInt(stock), Double.parseDouble(marge), Boolean.parseBoolean(dispo), descproduit);
+                case "ADDP": // Requête d'ajout (vient du formulaire de saisie)
+                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
                     request.setAttribute("message","Code " + idProduit + " Ajouté");
-                    request.setAttribute("listProduct", daoAdmin.listAllProduct());
+                    adminJSP(request,response);
                     break;
                 case "DELETE": // Requête de suppression (vient du lien hypertexte)
                     try {
@@ -225,23 +229,6 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

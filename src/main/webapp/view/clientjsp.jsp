@@ -17,8 +17,7 @@
                             <a href="clientEdit.jsp">Editer mes données personnelles</a>
                
                             <a href="clientAjout.jsp">Ajouter une commande</a>
-                            
-                            
+                          
 			    <table border=2>
                                 <%-- On affiche un tableau avec les codes --%>
                                 <tr> <th>Code Produit</th> <th>Quantité</th><th>Prix</th><th>Date</th><th>Modifier</th><th>Supprimer</th></tr>           
@@ -27,7 +26,7 @@
                                         <td>${purchaseOrder.quantite}</td>
                                         <td>${purchaseOrder.finalCost}</td>
                                         <td>${purchaseOrder.salesDate}</td>
-                                        <td><a href="orderModif">Modifier</a></td>
+                                        <td><a onclick="">Modifier</a></td>
                                         <td><a href="?action=DELETE&code=${purchaseOrder.orderNum}">Supprimer</a></td></tr>
                                 </c:forEach>      
                             </table>
