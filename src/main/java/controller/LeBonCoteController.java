@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -19,7 +20,9 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import modele.DAOConnexion;
 import modele.DAOadmin;
+import modele.DAOclient;
 import modele.DataSourceFactory;
+import org.json.JSONObject;
 
 /**
  *
@@ -39,12 +42,29 @@ public class LeBonCoteController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        if (actionIs(request,"Connexion")){
-            loginJSP(request,response);
-        } else if (actionIs(request,"admin")) {
-            adminJSP(request,response);
-        } else if (actionIs(request,"client")) {
-            clientJSP(request,response,request.getParameter("CustomerId"));
+        if (actionIs(request,"DELETEP")) {
+            
+        }
+        if (actionIs(request,"Connexion")) {
+            DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
+            String login = request.getParameter("login");
+            String mdp = request.getParameter("mdp");
+            request.setAttribute("login", login);
+            String modeCo;
+            if(login != null && mdp != null) {
+                modeCo = connexion.connexion(login, mdp);
+                switch(modeCo){
+                    case "admin":
+                        adminJSP(request,response);
+                        break;
+                    case "client":
+                        clientJSP(request,response,mdp);
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
         } else {
             loginJSP(request,response);
         }
@@ -56,40 +76,50 @@ public class LeBonCoteController extends HttpServlet {
 	}
     
     private void loginJSP(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
-        showView("view/loginjsp.jsp",request, response);
-        DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
-        String login = request.getParameter("login");
-        String mdp = request.getParameter("mdp");
-        String modeCo;
-        if(login != null && mdp != null) {
-            modeCo = connexion.connexion(login, mdp);
-            switch(modeCo){
-                case "admin":
-                    adminJSP(request,response);
-                    break;
-                case "client":
-                    request.setAttribute("CustomerId", mdp);
-                    clientJSP(request,response,mdp);
-                    break;
-                default:
-                    break;
-            }
-            
-        }
-        
+        showView("loginjsp.jsp",request, response);
     }
     
-    private void clientJSP(HttpServletRequest request, HttpServletResponse response,String customerId) throws ServletException, IOException {
-                        showView("view/clientjsp.jsp",request, response);
-			String playerName = request.getParameter("playerName");
-			request.setAttribute("playerName", playerName);
+    private void clientJSP(HttpServletRequest request, HttpServletResponse response,String customerId) throws ServletException, IOException, SQLException {
+                               String action = request.getParameter("action");
+	action = (action == null) ? "" : action;
+        
+        int idcustomer = Integer.parseInt(customerId);
+      //  int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
+        DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+        String nomUser = daoclient.findCustomer(idcustomer);
+        
+        try { 
+            request.setAttribute("nomClient",nomUser);
+            request.setAttribute("listePO", daoclient.listeOrder(idcustomer));
+            switch (action) {
+	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
+   
+                break;
+            case "DELETE": // Requête de suppression (vient du lien hypertexte)
+                String orderNum = request.getParameter("code");
+		daoclient.deletePurchaseOrder(Integer.parseInt(orderNum));
+                clientJSP(request,response,customerId);
+            break;
+            }
+            
+	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
+            
+        } catch (Exception ex) {
+            Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
+            request.setAttribute("message", ex.getMessage());
+	} finally {
+
+	}
+
 		
     }
     private void adminJSP(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        showView("view/adminjsp.jsp",request, response);
-       // HttpSession session = request.getSession();
         String action = request.getParameter("action");
         action = (action == null) ? "" : action; // Pour le switch qui n'aime pas les null
+        String actionCA = request.getParameter("actionCA");
+        actionCA = (action == null) ? "" : actionCA;
+        String dateDeb = request.getParameter("dateDeb");
+        String dateFin = request.getParameter("dateFin");
         String idProduit = request.getParameter("idProduit");
         String codeFabricant = request.getParameter("manuId");
         String codeProduit = request.getParameter("productCode");
@@ -98,17 +128,17 @@ public class LeBonCoteController extends HttpServlet {
         String marge = request.getParameter("markup");
         String dispo = request.getParameter("dispo");
         String descproduit = request.getParameter("descProd");
+        HashMap<String,Double> resultCa = new HashMap<>();
+        JSONObject json;
         
         DAOadmin daoAdmin; //DAO de l'admin
-        DataSource myDataSource = DataSourceFactory.getDataSource(); //Data source de l'application
-        daoAdmin = new DAOadmin(myDataSource);
+        daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
         
         try {
-            
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
-                case "ajouter": // Requête d'ajout (vient du formulaire de saisie)
-                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Float.parseFloat(prixAchat), Integer.parseInt(stock), Float.parseFloat(marge), Boolean.parseBoolean(dispo), descproduit);
+                case "ADD": // Requête d'ajout (vient du formulaire de saisie)
+                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Double.parseDouble(prixAchat), Integer.parseInt(stock), Double.parseDouble(marge), Boolean.parseBoolean(dispo), descproduit);
                     request.setAttribute("message","Code " + idProduit + " Ajouté");
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     break;
@@ -122,16 +152,29 @@ public class LeBonCoteController extends HttpServlet {
                     }
                     break;
             }
+            switch(actionCA){
+                case "caClient": // Cas du chiffre d'affaire par client
+                    resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
+                    json = new JSONObject(resultCa);
+                    break;
+                case "caZoneGeo": // Cas du chiffre d'affaire par la zone geo
+                    resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
+                    json = new JSONObject(resultCa);
+                    break;
+                case "caCat": // Cas du chiffre d'affaire par categorie
+                    resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
+                    json = new JSONObject(resultCa);
+                    break;
+            }
         } catch (Exception ex) {
             request.setAttribute("message", ex.getMessage());
         } finally {
-            
         }
-        
+        showView("adminjsp.jsp",request, response);
     }
     
     private void showView(String jsp, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		getServletConfig().getServletContext().getRequestDispatcher("/views/" + jsp).forward(request, response);
+		getServletConfig().getServletContext().getRequestDispatcher("/view"+ "/" + jsp).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -182,6 +225,17 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

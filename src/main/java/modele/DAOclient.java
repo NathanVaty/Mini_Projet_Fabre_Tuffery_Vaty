@@ -206,8 +206,8 @@ public class DAOclient {
      * @return boolean si il estxiste ou pas dans la BD
      * @throws java.sql.SQLException
      */
-    public boolean findCustomer(int num) throws SQLException{
-        boolean result = false;
+    public String findCustomer(int num) throws SQLException{
+        String result = "";
         String sql = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
 		try (Connection connection = myDataSource.getConnection();
 			PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -216,7 +216,7 @@ public class DAOclient {
 			ResultSet rs = stmt.executeQuery();
                         // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
 			if (rs.next()) {
-				result = true;
+				result = rs.getString("NAME");
 			}
                 }
         return result;
@@ -293,6 +293,7 @@ public class DAOclient {
     
    
     }           
+
 
 
 

@@ -4,6 +4,7 @@
     Author     : morga
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,16 +13,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Display Client</h1>
-		<c:choose>
-			<%-- On n'a pas trouvé le client --%>
-			<c:when test="${empty customerId}">
-				Client inconnu.			
-			</c:when>
-                                
-                        <c:otherwise> <%-- On a trouvé --%>
-                            
-                            
+        <h1>Bienvenue ${nomClient}</h1>
                             <a href="clientEdit.jsp">Editer mes données personnelles</a>
                
                             <a href="clientAjout.jsp">Ajouter une commande</a>
@@ -31,12 +23,14 @@
                                 <%-- On affiche un tableau avec les codes --%>
                                 <tr> <th>Code Produit</th> <th>Quantité</th><th>Prix</th><th>Date</th><th>Modifier</th><th>Supprimer</th></tr>           
                                 <c:forEach var="purchaseOrder" items="${listePO}">
-                                    <tr><td>${purchaseOrder.productId}</td><td>${purchaseOrder.quantite}</td><td>${purchaseOrder.finalCost}</td><td>${purchaseOrder.salesDate}</td><td><a href="orderModif">Modifier</a></td><td><a href="?action=DELETE&code=${purchaseOrder.order_Num}">Supprimer</a></td></tr>
+                                    <tr><td>${purchaseOrder.productId}</td>
+                                        <td>${purchaseOrder.quantite}</td>
+                                        <td>${purchaseOrder.finalCost}</td>
+                                        <td>${purchaseOrder.salesDate}</td>
+                                        <td><a href="orderModif">Modifier</a></td>
+                                        <td><a href="?action=DELETE&code=${purchaseOrder.orderNum}">Supprimer</a></td></tr>
                                 </c:forEach>      
                             </table>
-			</c:otherwise>
-                                
-                </c:choose>
 		<br>
 		<%-- Equivalent de request.getContextPath() en java --%>
 		<a href='${pageContext.request.contextPath}'>Retour au menu</a><br>

@@ -42,11 +42,10 @@ public class ClientController extends HttpServlet {
 	action = (action == null) ? "" : action;
         
         
-        int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));;
+        int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
+        DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
         
-        try {
-            
-            DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+        try { 
 
             request.setAttribute("listePO", daoclient.listeOrder(2));
             
@@ -58,9 +57,7 @@ public class ClientController extends HttpServlet {
 	} finally {
 
 	}
-        
-        
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -103,4 +100,6 @@ public class ClientController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
 
