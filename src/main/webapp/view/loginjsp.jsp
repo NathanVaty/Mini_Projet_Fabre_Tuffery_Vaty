@@ -14,13 +14,13 @@
     <body>
         <h1>Bienvenue sur Le bon coté !</h1>
         <hr/>
-        <p>
-            Identifiez vous:<br/>
         <form method='POST'>
+             <p>
+            Identifiez vous:<br/>
             ID: <input type="text" name="login"/><br/>
             mdp: <input type="password" name="mdp"><br/>
             <input type="submit" name="action" value="Connexion">
+             </p>
         </form>
-        </p>
     </body>
 </html>

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import entity.ListCA;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,7 +49,7 @@ public class DAOTest {
         String dateDeb = "2011-05-24";
         String dateFin = "2011-05-24";
         boolean valide = true;
-        HashMap<String,Double> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
+        List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
         
         HashMap<String,Double> resultAttendu = new HashMap<>();
         resultAttendu.put("BK", 6963.375000);
@@ -86,7 +87,7 @@ public class DAOTest {
          String dateDeb = "2011-05-24";
          String dateFin = "2011-05-24";
          boolean valide = true;
-         HashMap<String,Double> result = myDaoAdmin.CAofZoneGeo(dateDeb, dateFin);
+        List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
          
          // HashMap de retour
          HashMap<String,Double> resultAttendu = new HashMap<>();
@@ -129,7 +130,7 @@ public class DAOTest {
          String dateDeb = "2011-05-24";
          String dateFin = "2011-05-24";
          boolean valide = true;
-         HashMap<String,Double> result = myDaoAdmin.CAfromClient(dateDeb, dateFin);
+        List<ListCA> result = myDaoAdmin.CAofCategorie(dateDeb, dateFin);
          
          // HashMap de retour
          HashMap<String,Double> resultAttendu = new HashMap<>();
@@ -172,7 +173,7 @@ public class DAOTest {
     public void testInsertProduct() {
         // TODO Implementer + changer val retour
         try {
-            myDaoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,true,"Produit de test");
+            myDaoAdmin.insertProduct(19985678,"SW",2000.0,10,10.5,"true","Produit de test");
         } catch (Exception e) {
             System.out.println("Erreur sur l'insertion d'un produit");
             fail();

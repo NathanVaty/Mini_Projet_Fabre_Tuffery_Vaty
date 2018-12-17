@@ -10,13 +10,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
-
+import entity.ListCA;
 /**
  *
  * @author Nathan Vaty
@@ -39,8 +38,8 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofCategorie(String dateDeb, String dateFin) {
-       HashMap<String,Double> chiffreAff = new HashMap<>();
+    public List<ListCA> CAofCategorie(String dateDeb, String dateFin) {
+        List<ListCA> chiffreAff = new LinkedList<>();
         String rqtPC = "SELECT PC.PROD_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA " +
                         "FROM PRODUCT_CODE PC " +
                         "JOIN PRODUCT P ON P.PRODUCT_CODE = PC.PROD_CODE " +
@@ -56,7 +55,8 @@ public class DAOadmin {
                 while(rs.next()) {
                     String pc = rs.getString("PROD_CODE");
                     double dc = rs.getDouble("CA");
-                    chiffreAff.put(pc, dc);
+                    ListCA c = new ListCA(pc,dc);
+                    chiffreAff.add(c);
                 }
                 System.out.println("apres while");            
         } catch(SQLException e) {
@@ -73,8 +73,8 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAofZoneGeo(String dateDeb, String dateFin) {
-       HashMap<String,Double> chiffreAff = new HashMap<>();
+    public List<ListCA> CAofZoneGeo(String dateDeb, String dateFin) {
+        List<ListCA> chiffreAff = new LinkedList<>();
         String rqtPC = "SELECT MK.ZIP_CODE, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA\n" +
                         "FROM MICRO_MARKET MK\n" +
                         "JOIN CUSTOMER C ON C.ZIP = MK.ZIP_CODE\n" +
@@ -92,7 +92,8 @@ public class DAOadmin {
                 while(rs.next()) {
                     String pc = rs.getString("ZIP_CODE");
                     double dc = rs.getDouble("CA");
-                    chiffreAff.put(pc, dc);
+                    ListCA c = new ListCA(pc,dc);
+                    chiffreAff.add(c);
                 }
             
         } catch(SQLException e) {
@@ -107,8 +108,8 @@ public class DAOadmin {
      * @param dateFin
      * @return 
      */
-    public HashMap<String,Double> CAfromClient(String dateDeb,String dateFin) {
-       HashMap<String,Double> chiffreAff = new HashMap<>();
+    public List<ListCA> CAfromClient(String dateDeb,String dateFin) {
+       List<ListCA> chiffreAff = new LinkedList<>();
         String rqtPC = "SELECT C.CUSTOMER_ID, SUM((PO.QUANTITY*P.PURCHASE_COST)*(1-(D.RATE*0.01))+PO.SHIPPING_COST) AS CA\n" +
                         "FROM CUSTOMER C\n" +
                         "JOIN PURCHASE_ORDER PO ON PO.CUSTOMER_ID = C.CUSTOMER_ID\n" +
@@ -125,7 +126,8 @@ public class DAOadmin {
                 while(rs.next()) {
                     String pc = rs.getString("CUSTOMER_ID");
                     double dc = rs.getDouble("CA");
-                    chiffreAff.put(pc, dc);
+                    ListCA c = new ListCA(pc,dc);
+                    chiffreAff.add(c);
                 }
             
         } catch(SQLException e) {
@@ -145,7 +147,7 @@ public class DAOadmin {
      * @param desc
      */
     public void insertProduct(int manufactID,String prodCode, double prodCost,
-                    int quantite, double markup, boolean dispo, String desc) {
+                    int quantite, double markup, String dispo, String desc) {
         String sql = "INSERT INTO PRODUCT "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
@@ -159,13 +161,13 @@ public class DAOadmin {
                 orderNum = clefs.getInt(1);
              }
              
-             discountStatement.setInt(1, orderNum);
+             discountStatement.setInt(1, 985);
              discountStatement.setInt(2, manufactID);
              discountStatement.setString(3, prodCode);
              discountStatement.setDouble(4, prodCost);
              discountStatement.setInt(5, quantite);
              discountStatement.setDouble(6, markup);
-             discountStatement.setBoolean(7, dispo);
+             discountStatement.setString(7, dispo);
              discountStatement.setString(8, desc);
              
              
@@ -305,6 +307,32 @@ public class DAOadmin {
 			}
 		}
 		return result ;              
+    }
+    
+    public ProductEntity getProduct(int prodID) throws SQLException{
+        ProductEntity result = new ProductEntity(0,0, "", Double.MAX_VALUE, 0, Double.NaN, true, "");
+        String sql = "SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?";
+        try (Connection connection = myDataSource.getConnection();
+		     PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, prodID);
+            try (ResultSet rs = stmt.executeQuery()){
+                while(rs.next()){
+                    int productId = rs.getInt("PRODUCT_ID");
+                    int manuId = rs.getInt("MANUFACTURER_ID");
+                    String productCode = rs.getString("PRODUCT_CODE");
+                    Double costProduct = rs.getDouble("PURCHASE_COST");
+                    int quantity = rs.getInt("QUANTITY_ON_HAND");
+                    Double markup = rs.getDouble("MARKUP");
+                    boolean available = rs.getBoolean("AVAILABLE");
+                    String desc = rs.getString("DESCRIPTION");
+                    result = new ProductEntity(productId, manuId, productCode, costProduct, quantity, markup, available, desc);
+                
+                    return result;
+                }
+            }
+            
+        }
+        return result;
     }
 }
 
