@@ -58,24 +58,8 @@ public class DAOTest {
         resultAttendu.add(new ListCA("HW", 282546.390000));
         resultAttendu.add(new ListCA("SW", 179916.0988));
         
-        // Vérification du contenu de la table crée
-        for(String key : result.keySet()){
-           // On vérifie si la clé existe
-           if (resultAttendu.containsKey(key)){
-               // ON vérifie le contenu de la clé
-               if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé (" + result.keySet() 
-                                    + ") résultat attendu : "  
-                                    + resultAttendu.get(key)
-                                    +" la valeur n'est pas bonne");
-                   valide = false;
-               }
-           } else {
-               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
-               valide = false;
-           }
-        }    
-        assertEquals(valide, true);
+        // Vérification du contenu de la table crée  
+        assertEquals(true, resultAttendu.equals(result));
     }
     
     /**
@@ -102,23 +86,8 @@ public class DAOTest {
          resultAttendu.add(new ListCA("95035",130501.8388));
          resultAttendu.add(new ListCA("95117",48259.850));
          
-        // Vérification du contenu de la table crée
-        for(String key : result.keySet()){
-           // On vérifie si la clé existe
-           if (resultAttendu.containsKey(key)){
-               if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé (" + result.keySet() 
-                                    + ") résultat attendu : "  
-                                    + resultAttendu.get(key)
-                                    +" la valeur n'est pas bonne");
-                   valide = false;
-               }
-           } else {
-               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
-               fail(); //Si erreur on passe par la
-           }
-        }    
-        assertEquals(valide, true);
+        // Vérification du contenu de la table crée  
+        assertEquals(true, resultAttendu.equals(result));
     }
     
     /**
@@ -150,25 +119,7 @@ public class DAOTest {
          resultAttendu.add(new ListCA("863",5875.8));
          
         // Vérification du contenu de la table crée
-        
-        
-        for(String key : result.keySet()){
-           // On vérifie si la clé existe
-           if (resultAttendu.containsKey(key)){
-               // ON vérifie le contenu de la clé
-               if(!(result.get(key).equals(resultAttendu.get(key)))){
-                   System.out.println("Erreur sur la clé (" + result.keySet() 
-                                    + ") résultat attendu : "  
-                                    + resultAttendu.get(key)
-                                    +" la valeur n'est pas bonne");
-                   valide = false;
-               }
-           } else {
-               System.out.println("Erreur la clé(" + key + ") n'est pas connu");
-               valide = false;
-           }
-        }    
-        assertEquals(valide, true);
+        assertEquals(true, resultAttendu.equals(result));
     }
     
     @Test @Ignore
@@ -207,7 +158,7 @@ public class DAOTest {
 	        result = rs.getInt("PRODUCT_ID");
 	    }
             
-            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, true, "Produit Test Update");
+            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, "TRUE", "Produit Test Update");
         } catch (Exception e) {
             System.out.println("Erreur sur la modification d'un produit");
             fail();
