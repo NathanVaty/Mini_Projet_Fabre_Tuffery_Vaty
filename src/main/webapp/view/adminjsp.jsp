@@ -68,6 +68,7 @@
                     
         </form>
         <%--  On montre un éventuel message d'erreur --%>
+        <div><h4>${idPro}</h4></div>
 	<div><h4>${codeF}</h4></div>
         <div><h4>${codeP}</h4></div>
         <div><h4>${prixA}</h4></div>
@@ -79,7 +80,7 @@
         <%--  On montre La liste des produits --%>
         <div>
             <table border="1">
-                <tr><th>Id du produit</th><th>Id du fabricant</th><th>Code produit</th><th>Prix achat</th><th>Stock</th><th>Marge</th><th>Disponibilite</th><th>Description</th><th>Supprimer</th></tr>
+                <tr><th>Id du produit</th><th>Id du fabricant</th><th>Code produit</th><th>Prix achat</th><th>Stock</th><th>Marge</th><th>Disponibilite</th><th>Description</th><th>Supprimer</th><th>Mise à jour</th></tr>
                 <c:forEach var="list" items="${listProduct}">
                     <tr>
                         <td>${list.productId}</td>
@@ -90,7 +91,8 @@
                         <td>${list.markup}</td>
                         <td>${list.available}</td>
                         <td>${list.desc}</td>
-                        <td><a href="?action=DELETEP&idProduit=${list.productId}" >delete</a></td>
+                        <td><a href="?action=DELETEP&idProduit=${list.productId}">delete</a></td>
+                        <td><a href="?action=MODIFYP&idProduit=${list.productId}">modifier</a></td>
                     </tr>
                 </c:forEach> 
             </table> 
