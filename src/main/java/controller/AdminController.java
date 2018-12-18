@@ -9,6 +9,7 @@ import entity.ListCA;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.console;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class AdminController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         String action = request.getParameter("action");// Pour le switch qui n'aime pas les null
         String actionCA = request.getParameter("actionCA");
         String dateDeb = request.getParameter("dateDeb");
@@ -60,56 +61,74 @@ public class AdminController extends HttpServlet {
         
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
-//        try {    
-//	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
-//	    switch (action) {
-//	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-//		request.setAttribute("codeF",Integer.parseInt(codeFabricant));
-//                    request.setAttribute("codeP",codeProduit);
-//                    request.setAttribute("prixA", Float.parseFloat(prixAchat));
-//                    request.setAttribute("stock",Integer.parseInt(stock));
-//                    request.setAttribute("marge",Float.parseFloat(marge));
-//                    request.setAttribute("dispo", dispo.toUpperCase());
-//                    request.setAttribute("desc",descproduit);
-//                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
-//                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
-//                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
-//                break;
-//            case "DELETE": // Requête de suppression (vient du lien hypertexte)
-//		try {
-//                       daoAdmin.deleteProduct(Integer.parseInt(idProduit));
-//                       request.setAttribute("message", "Code " + idProduit + " Supprimé");
-//                       request.setAttribute("listProduct", daoAdmin.listAllProduct());									
-//                    } catch (SQLIntegrityConstraintViolationException e) {
-//                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
-//                    }
-//                }
-//            }
-//            if (actionCA != null){
-//                if(typeCA.equals("caClient")){
-//                    //resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
-//                    request.setAttribute("listCA",daoAdmin.CAfromClient(dateDeb, dateFin));
-//                     //json = new JSONObject(resultCa);
-//                }
-//                if(typeCA.equals("caZoneGeo")){
-//                    //resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
-//                    request.setAttribute("listCA",daoAdmin.CAofZoneGeo(dateDeb, dateFin));
-//                    //json = new JSONObject(resultCa);
-//                }
-//                if(typeCA.equals("caCat")){
-//                    //resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
-//                    request.setAttribute("listCA",daoAdmin.CAofCategorie(dateDeb, dateFin));
-//                    //json = new JSONObject(resultCa);
-//                }
-//            }
-//	} catch (Exception ex) {
-//            request.setAttribute("message", ex.getMessage());
-//	} finally {
-//	}
-//        // On continue vers la page JSP sélectionnée
-//	request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
-
+        try {    
+	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
+	    switch (action) {
+	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
+		request.setAttribute("codeF",Integer.parseInt(codeFabricant));
+                    request.setAttribute("codeP",codeProduit);
+                    request.setAttribute("prixA", Float.parseFloat(prixAchat));
+                    request.setAttribute("stock",Integer.parseInt(stock));
+                    request.setAttribute("marge",Float.parseFloat(marge));
+                    request.setAttribute("dispo", dispo.toUpperCase());
+                    request.setAttribute("desc",descproduit);
+                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                break;
+            case "DELETE": // Requête de suppression (vient du lien hypertexte)
+		try {
+                       daoAdmin.deleteProduct(Integer.parseInt(idProduit));
+                       request.setAttribute("message", "Code " + idProduit + " Supprimé");
+                       request.setAttribute("listProduct", daoAdmin.listAllProduct());									
+                    } catch (SQLIntegrityConstraintViolationException e) {
+                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+                    }
+                break;
+                
+            case "MODIFYP": // Requete de modification pour afficher le formulaire
+                request.setAttribute("prodId",idProduit);
+                request.getRequestDispatcher("view/modifyPro.jsp").forward(request, response);
+                break;
+            
+            case "MODIFY": //Requete qui met a jour le produit
+                request.setAttribute("idPro",Integer.parseInt(idProduit));
+                request.setAttribute("codeF",Integer.parseInt(codeFabricant));
+                request.setAttribute("codeP",codeProduit);
+                request.setAttribute("prixA", Float.parseFloat(prixAchat));
+                request.setAttribute("stock",Integer.parseInt(stock));
+                request.setAttribute("marge",Float.parseFloat(marge));
+                request.setAttribute("dispo", dispo.toUpperCase());
+                request.setAttribute("desc",descproduit);
+                daoAdmin.updateProduct(Integer.parseInt(idProduit), Integer.parseInt(codeFabricant), codeProduit, 
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+            }
+            if (actionCA != null){
+                if(typeCA.equals("caClient")){
+                    //resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAfromClient(dateDeb, dateFin));
+                     //json = new JSONObject(resultCa);
+                }
+                if(typeCA.equals("caZoneGeo")){
+                    //resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAofZoneGeo(dateDeb, dateFin));
+                    //json = new JSONObject(resultCa);
+                }
+                if(typeCA.equals("caCat")){
+                    //resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
+                    request.setAttribute("listCA",daoAdmin.CAofCategorie(dateDeb, dateFin));
+                    //json = new JSONObject(resultCa);
+                }
+            }
+    } catch (Exception ex) {
+       request.setAttribute("message", ex.getMessage());
+    } finally {
     }
+     // On continue vers la page JSP sélectionnée
+     request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
+
+}  
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -123,7 +142,11 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -137,7 +160,11 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
