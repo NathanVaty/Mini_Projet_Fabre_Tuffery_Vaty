@@ -17,6 +17,8 @@
         
         <a href="?action=&code=${customerId}">Retour</a>
         
+        Ajouter une facture :
+        
         <form method='GET'>
                     
             <select name="produit">
@@ -33,9 +35,5 @@
             <input type="submit" value="Ajouter">
         </form>
         
-        
-
-        int customerId ,int productId,int quantite, float shippingCost, String salesDate,
-                                 String shippingDate, String freightCompany
     </body>
 </html>

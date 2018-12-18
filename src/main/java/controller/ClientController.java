@@ -5,6 +5,7 @@
  */
 package controller;
 
+import entity.ProductEntity;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import modele.DAOadmin;
 import modele.DAOclient;
 import modele.DataSourceFactory;
+import modele.PurchaseOrder;
 
 /**
  *
@@ -66,12 +68,13 @@ String reportDate = df.format(today);
         String produit = request.getParameter("produit");
         String quantite = request.getParameter("quantite");
         String code = request.getParameter("code");
-        //List<PurchaseOrder> listePO = daoclient.listeOrder(2);
+        List<PurchaseOrder> listePO = daoclient.listeOrder(2);
+        ProductEntity leProduit;//Le produit qu'on recupera grace a la fonction getproduct
+        
         
         try { 
             if(action != null) {
                 if (action.equals("DELETE")) {
-                    request.setAttribute("code",code);
                     daoclient.deletePurchaseOrder(Integer.parseInt(code));
 //                    listePO = daoclient.listeOrder(2);
                 } else if (action.equals("ADD")) {
@@ -79,8 +82,9 @@ String reportDate = df.format(today);
                     request.getRequestDispatcher("view/addPo.jsp").forward(request, response);
                 } else if(action.equals("ADDPO")){
                     
-                    
-                    request.setAttribute("idprod",produit);
+                    leProduit = daoAdmin.getProduct(Integer.parseInt(produit));
+                    daoclient.addPurchaseOrder(customerId ,Integer.parseInt(produit),Integer.parseInt(quantite), leProduit.getCostProduct() , reportDate,
+                                 reportDate, null);
                     
                     
                 } else if (action.equals("UPDATEPO")) {	
