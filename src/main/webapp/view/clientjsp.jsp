@@ -31,7 +31,5 @@
                                 </c:forEach>      
                             </table>
 		<br>
-		<%-- Equivalent de request.getContextPath() en java --%>
-		<a href='${pageContext.request.contextPath}'>Retour au menu</a><br>
     </body>
 </html>

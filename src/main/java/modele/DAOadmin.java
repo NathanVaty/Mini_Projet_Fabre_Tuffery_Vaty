@@ -148,8 +148,8 @@ public class DAOadmin {
      * @param dispo
      * @param desc
      */
-   public void insertProduct(int manufactID,String prodCode, double prodCost,
-                    int quantite, double markup, String dispo, String desc) {
+   public void insertProduct(int manufactID,String prodCode, float prodCost,
+                    int quantite, float markup, String dispo, String desc) {
         String sql = "INSERT INTO PRODUCT "
                 + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
          try (Connection connection = myDataSource.getConnection();
@@ -162,17 +162,15 @@ public class DAOadmin {
              discountStatement.setInt(1, productID);
              discountStatement.setInt(2, manufactID);
              discountStatement.setString(3, prodCode);
-             discountStatement.setDouble(4, prodCost);
+             discountStatement.setFloat(4, prodCost);
              discountStatement.setInt(5, quantite);
-             discountStatement.setDouble(6, markup);
+             discountStatement.setFloat(6, markup);
              discountStatement.setString(7, dispo);
              discountStatement.setString(8, desc);
              
              
              // On ajoute le code discount avec une requete
              discountStatement.executeUpdate();
-             connection.commit();
-             connection.close();
          } catch (SQLException ex) {
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
          }
@@ -351,6 +349,7 @@ public class DAOadmin {
         return result;
     }
 }
+
 
 
 

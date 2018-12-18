@@ -73,8 +73,8 @@ public class AdminController extends HttpServlet {
                     request.setAttribute("dispo", dispo.toUpperCase());
                     request.setAttribute("desc",descproduit);
                     daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
-                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
-                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                            Float.parseFloat(prixAchat), Integer.parseInt(stock), 
+                            Float.parseFloat(marge), dispo.toUpperCase(), descproduit);
                 break;
             case "DELETE": // Requête de suppression (vient du lien hypertexte)
 		try {
@@ -178,6 +178,8 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
 
 
 

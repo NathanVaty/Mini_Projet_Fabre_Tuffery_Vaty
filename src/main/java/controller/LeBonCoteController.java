@@ -6,9 +6,14 @@
 package controller;
 
 import entity.ListCA;
+import entity.ProductEntity;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,6 +28,7 @@ import modele.DAOConnexion;
 import modele.DAOadmin;
 import modele.DAOclient;
 import modele.DataSourceFactory;
+import modele.PurchaseOrder;
 import org.json.JSONObject;
 
 /**
@@ -32,6 +38,7 @@ import org.json.JSONObject;
 @WebServlet(name = "LeBonCoteController", urlPatterns = {"/LeBonCoteController"})
 public class LeBonCoteController extends HttpServlet {
 
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -42,7 +49,7 @@ public class LeBonCoteController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException, SQLException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
         String action = request.getParameter("action");
@@ -53,6 +60,12 @@ public class LeBonCoteController extends HttpServlet {
             case "MODIFY" : 
             case "ADDP" : adminJSP(request,response);
                     break;
+            case "ADD":
+            case "DELETE":
+            case "ADDPO":
+            case "UPDATEPO":
+            case "UPDATECU": clientJSP(request,response);
+                break;
                         
             case "Connexion":
             DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
@@ -67,7 +80,7 @@ public class LeBonCoteController extends HttpServlet {
                         adminJSP(request,response);
                         break;
                     case "client":
-                        clientJSP(request,response,mdp);
+                        clientJSP(request,response);
                         break;
                     default: 
                         break;
@@ -84,39 +97,61 @@ public class LeBonCoteController extends HttpServlet {
         showView("loginjsp.jsp",request, response);
     }
     
-    private void clientJSP(HttpServletRequest request, HttpServletResponse response,String customerId) throws ServletException, IOException, SQLException {
-                               String action = request.getParameter("action");
-	action = (action == null) ? "" : action;
+    private void clientJSP(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException, Exception {
+        String action = request.getParameter("action");
+        // the string representation of date (month/day/year)
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         
-        int idcustomer = Integer.parseInt(customerId);
-      //  int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
-        DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
-        String nomUser = daoclient.findCustomer(idcustomer);
+// Get the date today using Calendar object.
+Date today = Calendar.getInstance().getTime();
+// Using DateFormat format method we can create a string
+// representation of a date with the defined format.
+String reportDate = df.format(today);
+
+int customerID = request.getParameter("mdp") == null ?
+        0 : Integer.parseInt(request.getParameter("mdp"));
+DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
+DAOadmin daoAdmin; //DAO de l'admin
+daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
+String produit = request.getParameter("produit");
+String quantite = request.getParameter("quantite");
+String code = request.getParameter("code");
+List<PurchaseOrder> listePO = daoclient.listeOrder(customerID);
+request.setAttribute("nomClient", daoclient.findCustomer(customerID));
+ProductEntity leProduit;//Le produit qu'on recupera grace a la fonction getproduct
+request.setAttribute("listePO", listePO);
+
+
+try {
+    if (action.equals("DELETE")) {
+        daoclient.deletePurchaseOrder(Integer.parseInt(code));
+        listePO = daoclient.listeOrder(customerID);
+    } else if (action.equals("ADD")) {
+        request.setAttribute("listProduct", daoAdmin.listAllProduct());
+        showView("addPo.jsp", request, response);
+    } else if(action.equals("ADDPO")){
+        leProduit = daoAdmin.getProduct(Integer.parseInt(produit));
+        daoclient.addPurchaseOrder(customerID ,Integer.parseInt(produit),Integer.parseInt(quantite), leProduit.getCostProduct() , reportDate,
+                reportDate, null);
         
-        try { 
-            request.setAttribute("nomClient",nomUser);
-            request.setAttribute("listePO", daoclient.listeOrder(idcustomer));
-            switch (action) {
-	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
-   
-                break;
-            case "DELETE": // Requête de suppression (vient du lien hypertexte)
-                String orderNum = request.getParameter("code");
-		daoclient.deletePurchaseOrder(Integer.parseInt(orderNum));
-                clientJSP(request,response,customerId);
-            break;
-            }
-            
-	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
-            
-        } catch (Exception ex) {
-            Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
-            request.setAttribute("message", ex.getMessage());
-	} finally {
+        
+    } else if (action.equals("UPDATEPO")) {
+        showView("updatePo.jsp", request, response);
+        
+    }else if (action.equals("UPDATECU")) {
+        showView("updateCu.jsp", request, response);
+    }
+    
+    //request.setAttribute("listePO", listePO);
+    showView("clientjsp.jsp", request, response);
+    
+} catch (Exception ex) {
+    Logger.getLogger("discountEditor").log(Level.SEVERE, "Action en erreur", ex);
+    request.setAttribute("message", ex.getMessage());
+} finally {
+    
+}
 
-	}
-
-		
     }
     private void adminJSP(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -125,28 +160,46 @@ public class LeBonCoteController extends HttpServlet {
         actionCA = (action == null) ? "" : actionCA;
         String dateDeb = request.getParameter("dateDeb");
         String dateFin = request.getParameter("dateFin");
-        String codeFabricant = request.getParameter("manuId");
-        String codeProduit = request.getParameter("productCode");
-        String prixAchat = request.getParameter("purchaseCost");
-        String stock = request.getParameter("stock");
-        String marge = request.getParameter("markup");
-        String dispo = request.getParameter("dispo");
-        String descproduit = request.getParameter("descProd");
+//        int codeFabricant = Integer.parseInt(request.getParameter("manuId"));
+//        String codeProduit = request.getParameter("productCode");
+//        Float prixAchat = Float.parseFloat(request.getParameter("purchaseCost"));
+//        int stock = Integer.parseInt(request.getParameter("stock"));
+//        Float marge = Float.parseFloat(request.getParameter("markup"));
+//        String dispo = request.getParameter("dispo");
+//        String descproduit = request.getParameter("descProd");
         String idProduit = request.getParameter("idProduit");
         List<ListCA> resultCa = new LinkedList<>();
         JSONObject json;
         DataSource myDataSource = DataSourceFactory.getDataSource();
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(myDataSource);
+        DAOadmin dao = (DAOadmin) getServletContext().getAttribute("dao");
         
         try {
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
                 case "ADDP": // Requête d'ajout (vient du formulaire de saisie)
-                    //daoAdmin.insertProduct(19985678,"SW",234.0,10,10.5,"TRUE","A Supp");
-                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit,
-                            Double.parseDouble(prixAchat), Integer.parseInt(stock),
-                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                    //float prix = (float) 324.0;
+                    //float margee = (float) 21.4;
+                   //daoAdmin.insertProduct(19985678,"SW",prix,10,margee,"TRUE","A Suppdetouteurgence");
+                    int codeFabricant = Integer.parseInt(request.getParameter("manuId"));
+        String codeProduit = request.getParameter("productCode");
+        float prixAchat = Float.parseFloat(request.getParameter("purchaseCost").replaceAll(" ", ""));
+        int stock = Integer.parseInt(request.getParameter("stock"));
+        float marge = Float.parseFloat(request.getParameter("markup").replaceAll(" ", ""));
+        String dispo = request.getParameter("dispo");
+        String descproduit = request.getParameter("descProd");
+        int codeM = (int) codeFabricant;
+        float prix = prixAchat;
+        float margee = marge;
+        int stockage = (int) stock;
+        String disponible = ""+dispo+"";
+        String description = ""+descproduit+"";
+        String codeP = ""+codeProduit+"";
+        
+                    daoAdmin.insertProduct(codeM, codeP,
+                            prix, stockage,
+                            margee, disponible.toUpperCase(), description);
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     break;
                 case "DELETE": // Requête de suppression (vient du lien hypertexte)
@@ -164,9 +217,9 @@ public class LeBonCoteController extends HttpServlet {
                     break;
                     
                 case "MODIFY": //Requete qui met a jour le produit
-                    daoAdmin.updateProduct(Integer.parseInt(idProduit), Integer.parseInt(codeFabricant), codeProduit,
-                            Double.parseDouble(prixAchat), Integer.parseInt(stock),
-                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+//                    daoAdmin.updateProduct(Integer.parseInt(idProduit), codeFabricant, codeProduit,
+  //                          prixAchat, stock,
+ //                           marge, dispo.toUpperCase(), descproduit);
             }
             switch(actionCA){
                 case "caClient": // Cas du chiffre d'affaire par client
@@ -209,6 +262,8 @@ public class LeBonCoteController extends HttpServlet {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(LeBonCoteController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(LeBonCoteController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -227,6 +282,8 @@ public class LeBonCoteController extends HttpServlet {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(LeBonCoteController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(LeBonCoteController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -241,6 +298,22 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
