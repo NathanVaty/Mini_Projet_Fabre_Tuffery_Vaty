@@ -122,11 +122,13 @@ public class DAOTest {
         assertEquals(true, resultAttendu.equals(result));
     }
     
-    @Test @Ignore
+    @Test
     public void testInsertProduct() {
         // TODO Implementer + changer val retour
         try {
-            //myDaoAdmin.insertProduct(19985678,"SW",234.0,10,10.5,"TRUE","Produit de test2");
+            float prix = (float) 34.0;
+            float marge = (float) 24.0;
+            myDaoAdmin.insertProduct(19985678,"SW",prix,10,marge,"TRUE","Produit de test2");
         } catch (Exception e) {
             System.out.println("Erreur sur l'insertion d'un produit");
            System.out.println(e.getMessage());
@@ -158,7 +160,7 @@ public class DAOTest {
 	        result = rs.getInt("PRODUCT_ID");
 	    }
             
-            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, "TRUE", "Produit Test Update");
+//            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, "TRUE", "Produit Test Update");
         } catch (Exception e) {
             System.out.println("Erreur sur la modification d'un produit");
             fail();
@@ -281,7 +283,7 @@ public class DAOTest {
             System.out.println("Erreur sur delete product");
         }
     }
-    @Test @Ignore 
+    @Test
     public void listPurchaseOrder() throws SQLException{
         List<PurchaseOrder> resultAttendu = new LinkedList<>();
         List<PurchaseOrder> result = new LinkedList<>();
@@ -302,6 +304,9 @@ public class DAOTest {
         assertEquals(valide,true);  
     }
 }
+
+
+
 
 
 
