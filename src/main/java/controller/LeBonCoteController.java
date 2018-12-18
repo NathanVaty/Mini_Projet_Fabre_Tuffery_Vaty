@@ -156,6 +156,7 @@ public class LeBonCoteController extends HttpServlet {
                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                           request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     break;
                 case "DELETE": // Requête de suppression (vient du lien hypertexte)
                     try {
@@ -239,6 +240,10 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
 
 
 

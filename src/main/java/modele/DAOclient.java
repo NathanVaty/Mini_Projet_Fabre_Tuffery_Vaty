@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -80,6 +81,20 @@ public class DAOclient {
         
     }
     
+    public int getPOKey(){
+       int key = 0;
+        String sql = "SELECT MAX(ORDER_NUM) AS Cle FROM PURCHASE_ORDER";
+        try (Connection connection = myDataSource.getConnection();
+                Statement stmt = connection.createStatement();   
+                ResultSet rs = stmt.executeQuery(sql) ) {
+                    if(rs.next()) {
+                        key = rs.getInt("Cle");
+                    }
+        } catch (SQLException e) {
+            
+        }
+        return key;
+    }
     /**
      * Fonction permettant au client d'ajouter un bon de commande
      * @param customerId
@@ -100,11 +115,7 @@ public class DAOclient {
              // On définit la valeur de paramètre
             
              //Génération automatique du prochain ordeNum
-             int orderNum = 0; //Numero du prochain orderNum
-             ResultSet clefs = discountStatement.getGeneratedKeys();
-             while(clefs.next()){
-                orderNum = clefs.getInt(1);
-             }
+             int orderNum = getPOKey(); //Numero du prochain orderNum
              
              discountStatement.setInt(1, orderNum);
              discountStatement.setInt(2, customerId);
@@ -289,6 +300,7 @@ public class DAOclient {
     
    
     }           
+
 
 
 
