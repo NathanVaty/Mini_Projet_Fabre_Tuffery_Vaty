@@ -86,6 +86,14 @@
                             <outputDirectory>${endorsed.dir}</outputDirectory>
                             <silent>true</silent>
                             <artifactItems>
+                                <artifactIem>
+                                    <groupId>com.github.jsimone</groupId>
+                                    <artifactId>webapp-runner</artifactId>
+                                    <version>8.5.23.0</version>
+                                    <destFileName>
+                                        webapp-runner.jar
+                                    </destFileName>
+                                </artifactIem>
                                 <artifactItem>
                                     <groupId>javax</groupId>
                                     <artifactId>javaee-endorsed-api</artifactId>
@@ -101,3 +109,4 @@
     </build>
 
 </project>
+
