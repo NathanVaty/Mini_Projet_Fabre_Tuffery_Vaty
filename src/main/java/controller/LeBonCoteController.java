@@ -7,21 +7,17 @@ package controller;
 
 import entity.ListCA;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.BeforeCompletion;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import modele.DAOConnexion;
 import modele.DAOadmin;
@@ -48,12 +44,17 @@ public class LeBonCoteController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        if (actionIs(request,"DELETEP")) {
-            adminJSP(request,response);
-        } else if (actionIs(request, "ADDP")) {
-            adminJSP(request,response);
-        }
-        if (actionIs(request,"Connexion")) {
+        
+        String action = request.getParameter("action");
+        action = action == null? "": action;
+        switch (action) {
+            case "DELETEP" :
+            case "MODIFYP" :
+            case "MODIFY" : 
+            case "ADDP" : adminJSP(request,response);
+                    break;
+                        
+            case "Connexion":
             DAOConnexion connexion = new DAOConnexion(DataSourceFactory.getDataSource());
             String login = request.getParameter("login");
             String mdp = request.getParameter("mdp");
@@ -73,16 +74,12 @@ public class LeBonCoteController extends HttpServlet {
                 }
                 
             }
-        } else {
-            loginJSP(request,response);
+            default: loginJSP(request,response);
+                       break;
         }
         
     }
-    
-    private boolean actionIs(HttpServletRequest request, String action) {
-		return action.equals(request.getParameter("action"));
-	}
-    
+
     private void loginJSP(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         showView("loginjsp.jsp",request, response);
     }
@@ -135,6 +132,7 @@ public class LeBonCoteController extends HttpServlet {
         String marge = request.getParameter("markup");
         String dispo = request.getParameter("dispo");
         String descproduit = request.getParameter("descProd");
+        String idProduit = request.getParameter("idProduit");
         List<ListCA> resultCa = new LinkedList<>();
         JSONObject json;
         DataSource myDataSource = DataSourceFactory.getDataSource();
@@ -145,27 +143,30 @@ public class LeBonCoteController extends HttpServlet {
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
                 case "ADDP": // Requête d'ajout (vient du formulaire de saisie)
-                    //request.setAttribute("codeF",Integer.parseInt(codeFabricant));
-                    //request.setAttribute("codeP",codeProduit);
-                    //request.setAttribute("prixA", Float.parseFloat(prixAchat));
-                    //request.setAttribute("stock",Integer.parseInt(stock));
-                    //request.setAttribute("marge",Float.parseFloat(marge));
-                    //request.setAttribute("dispo", dispo.toUpperCase());
-                    //request.setAttribute("desc",descproduit);
                     //daoAdmin.insertProduct(19985678,"SW",234.0,10,10.5,"TRUE","A Supp");
-                   daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
-                           Double.parseDouble(prixAchat), Integer.parseInt(stock), 
-                           Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
-                           request.setAttribute("listProduct", daoAdmin.listAllProduct());
+                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit,
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock),
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                    request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     break;
                 case "DELETE": // Requête de suppression (vient du lien hypertexte)
                     try {
-                        //daoAdmin.deleteProduct(Integer.parseInt(idProduit));
+                        daoAdmin.deleteProduct(Integer.parseInt(idProduit));
                         request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     } catch (SQLIntegrityConstraintViolationException e) {
-                        //request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+                        // request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
                     }
                     break;
+                    
+                case "MODIFYP": // Requete de modification pour afficher le formulaire
+                    request.setAttribute("prodId",idProduit);
+                    request.getRequestDispatcher("view/modifyPro.jsp").forward(request, response);
+                    break;
+                    
+                case "MODIFY": //Requete qui met a jour le produit
+                    daoAdmin.updateProduct(Integer.parseInt(idProduit), Integer.parseInt(codeFabricant), codeProduit,
+                            Double.parseDouble(prixAchat), Integer.parseInt(stock),
+                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
             }
             switch(actionCA){
                 case "caClient": // Cas du chiffre d'affaire par client
@@ -240,6 +241,10 @@ public class LeBonCoteController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
 
 
 
