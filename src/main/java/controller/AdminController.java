@@ -100,9 +100,9 @@ public class AdminController extends HttpServlet {
                 request.setAttribute("marge",Float.parseFloat(marge));
                 request.setAttribute("dispo", dispo.toUpperCase());
                 request.setAttribute("desc",descproduit);
-                daoAdmin.updateProduct(Integer.parseInt(idProduit), Integer.parseInt(codeFabricant), codeProduit, 
-                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
-                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+                //daoAdmin.updateProduct(Integer.parseInt(idProduit), Integer.parseInt(codeFabricant), codeProduit, 
+                 //           Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+                  //          Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
             }
             if (actionCA != null){
                 if(typeCA.equals("caClient")){
