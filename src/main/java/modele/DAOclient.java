@@ -207,27 +207,6 @@ public class DAOclient {
 		}
     }
     
-    /**
-     * 
-     * @param num
-     * @return boolean si il estxiste ou pas dans la BD
-     * @throws java.sql.SQLException
-     */
-    public String findCustomer(int num) throws SQLException{
-        String result = "";
-        String sql = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
-		try (Connection connection = myDataSource.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql)) {
-			stmt.setInt(1, num);
-
-			ResultSet rs = stmt.executeQuery();
-                        // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
-			if (rs.next()) {
-				result = rs.getString("NAME");
-			}
-                }
-        return result;
-    }
     
     
     /**
@@ -252,6 +231,34 @@ public class DAOclient {
         return result;
     }
     
+    /**
+     * 
+     * @param num
+     * @return Renvoie la ligne de la purchase order
+     * @throws java.sql.SQLException
+     */
+    public PurchaseOrder getPurchaseOrder(int num) throws SQLException{
+        PurchaseOrder result = null;
+        String sql = "SELECT * FROM PURCHASE_ORDER WHERE ORDER_NUM = ?";
+		try (Connection connection = myDataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.setInt(1, num);
+
+			ResultSet rs = stmt.executeQuery();
+                        // Si on trouve au moins une ligne correspondant au purchase order on renvoie vrai
+			if (rs.next()) {
+                            int orderNum = rs.getInt("ORDER_NUM");
+                            int productId = rs.getInt("PRODUCT_ID");
+                            int quantite = rs.getInt("QUANTITY");
+                            String salesDate = rs.getString("SALES_DATE");
+                            float finalCost = rs.getFloat("TOTAL");
+                            // On crée l'objet DiscountCodeEntity
+                            result = new PurchaseOrder(orderNum, productId,quantite,finalCost,salesDate);
+			}
+                }
+        return result;
+    }
+   
     /**
      *
      * @param customerID
@@ -297,20 +304,20 @@ public class DAOclient {
         
     }
     
-    
+        public String findCustomer(int num) throws SQLException{
+            String result = "";
+            String sql = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+                    try (Connection connection = myDataSource.getConnection();
+                            PreparedStatement stmt = connection.prepareStatement(sql)) {
+                            stmt.setInt(1, num);
+
+                            ResultSet rs = stmt.executeQuery();
+                            // Si on trouve au moins une ligne correspondant au customer on renvoie vrai
+                            if (rs.next()) {
+                                    result = rs.getString("NAME");
+                            }
+                    }
+            return result;
+        }
    
     }           
-
-
-
-
-
-
-
-
-
-
-
-
-
-

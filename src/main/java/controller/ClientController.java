@@ -67,15 +67,16 @@ String reportDate = df.format(today);
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
         String produit = request.getParameter("produit");
         String quantite = request.getParameter("quantite");
-        String code = request.getParameter("code");
+        String codePO = request.getParameter("code");
         List<PurchaseOrder> listePO = daoclient.listeOrder(2);
         ProductEntity leProduit;//Le produit qu'on recupera grace a la fonction getproduct
+        PurchaseOrder laFacture;//La facture qu'on recupera grace a la fonction 
         
         
         try { 
             if(action != null) {
                 if (action.equals("DELETE")) {
-                    daoclient.deletePurchaseOrder(Integer.parseInt(code));
+                    daoclient.deletePurchaseOrder(Integer.parseInt(codePO));
 //                    listePO = daoclient.listeOrder(2);
                 } else if (action.equals("ADD")) {
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
@@ -88,14 +89,20 @@ String reportDate = df.format(today);
                     
                     
                 } else if (action.equals("UPDATEPO")) {	
+                    //leProduit = daoAdmin.getProduct(Integer.parseInt(produit));
+                    laFacture = daoclient.getPurchaseOrder(Integer.parseInt(codePO));
+                     //request.setAttribute("prod", leProduit);
+                     request.setAttribute("po", laFacture);
                     request.getRequestDispatcher("view/updatePo.jsp").forward(request, response);
                     
                 }else if (action.equals("UPDATECU")) {
+                    
+                    
                     request.getRequestDispatcher("view/updateCu.jsp").forward(request, response);
                 }
             }
             
-            //request.setAttribute("listePO", listePO);
+            request.setAttribute("listePO", listePO);
 	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
             
         } catch (Exception ex) {
