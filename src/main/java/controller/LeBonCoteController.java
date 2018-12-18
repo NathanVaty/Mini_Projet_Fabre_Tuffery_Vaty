@@ -160,13 +160,6 @@ try {
         actionCA = (action == null) ? "" : actionCA;
         String dateDeb = request.getParameter("dateDeb");
         String dateFin = request.getParameter("dateFin");
-//        int codeFabricant = Integer.parseInt(request.getParameter("manuId"));
-//        String codeProduit = request.getParameter("productCode");
-//        Float prixAchat = Float.parseFloat(request.getParameter("purchaseCost"));
-//        int stock = Integer.parseInt(request.getParameter("stock"));
-//        Float marge = Float.parseFloat(request.getParameter("markup"));
-//        String dispo = request.getParameter("dispo");
-//        String descproduit = request.getParameter("descProd");
         String idProduit = request.getParameter("idProduit");
         List<ListCA> resultCa = new LinkedList<>();
         JSONObject json;
@@ -179,30 +172,28 @@ try {
             request.setAttribute("listProduct", daoAdmin.listAllProduct());
             switch (action) {
                 case "ADDP": // Requête d'ajout (vient du formulaire de saisie)
-                    //float prix = (float) 324.0;
-                    //float margee = (float) 21.4;
-                   //daoAdmin.insertProduct(19985678,"SW",prix,10,margee,"TRUE","A Suppdetouteurgence");
+               
                     int codeFabricant = Integer.parseInt(request.getParameter("manuId"));
-        String codeProduit = request.getParameter("productCode");
-        float prixAchat = Float.parseFloat(request.getParameter("purchaseCost").replaceAll(" ", ""));
-        int stock = Integer.parseInt(request.getParameter("stock"));
-        float marge = Float.parseFloat(request.getParameter("markup").replaceAll(" ", ""));
-        String dispo = request.getParameter("dispo");
-        String descproduit = request.getParameter("descProd");
-        int codeM = (int) codeFabricant;
-        float prix = prixAchat;
-        float margee = marge;
-        int stockage = (int) stock;
-        String disponible = ""+dispo+"";
-        String description = ""+descproduit+"";
-        String codeP = ""+codeProduit+"";
-        
+                    String codeProduit = request.getParameter("productCode");
+                    float prixAchat = Float.parseFloat(request.getParameter("purchaseCost").replaceAll(" ", ""));
+                    int stock = Integer.parseInt(request.getParameter("stock"));
+                    float marge = Float.parseFloat(request.getParameter("markup").replaceAll(" ", ""));
+                    String dispo = request.getParameter("dispo");
+                    String descproduit = request.getParameter("descProd");
+                    int codeM = (int) codeFabricant;
+                    float prix = prixAchat;
+                    float margee = marge;
+                    int stockage = (int) stock;
+                    String disponible = ""+dispo+"";
+                    String description = ""+descproduit+"";
+                    String codeP = ""+codeProduit+"";
+                    
                     daoAdmin.insertProduct(codeM, codeP,
                             prix, stockage,
                             margee, disponible.toUpperCase(), description);
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     break;
-                case "DELETE": // Requête de suppression (vient du lien hypertexte)
+                case "DELETEP": // Requête de suppression (vient du lien hypertexte)
                     try {
                         daoAdmin.deleteProduct(Integer.parseInt(idProduit));
                         request.setAttribute("listProduct", daoAdmin.listAllProduct());
@@ -213,13 +204,31 @@ try {
                     
                 case "MODIFYP": // Requete de modification pour afficher le formulaire
                     request.setAttribute("prodId",idProduit);
-                    request.getRequestDispatcher("view/modifyPro.jsp").forward(request, response);
+                    showView("modifyPro.jsp", request, response);
                     break;
                     
                 case "MODIFY": //Requete qui met a jour le produit
-//                    daoAdmin.updateProduct(Integer.parseInt(idProduit), codeFabricant, codeProduit,
-  //                          prixAchat, stock,
- //                           marge, dispo.toUpperCase(), descproduit);
+                    int codeF = Integer.parseInt(request.getParameter("manuId"));
+                    String pCode = request.getParameter("productCode");
+                    float pAchat = Float.parseFloat(request.getParameter("purchaseCost").replaceAll(" ", ""));
+                    int stockP = Integer.parseInt(request.getParameter("stock"));
+                    float margeP = Float.parseFloat(request.getParameter("markup").replaceAll(" ", ""));
+                    String dispoP = request.getParameter("dispo");
+                    String descP = request.getParameter("descProd");
+                    int codeMa = (int) codeF;
+                    float prixA = (float) pAchat;
+                    float margeeP = (float) margeP;
+                    int stockageP = (int) stockP;
+                    String disponibleP = ""+dispoP+"";
+                    String descriptionP = ""+descP+"";
+                    String codeProd = ""+pCode+"";
+                    int idP = Integer.parseInt(request.getParameter("idProduit").replaceAll(" ", ""));
+                    int idProd = (int) idP;
+                    daoAdmin.updateProduct(idProd,codeMa,codeProd,prixA,stockageP,margeeP,disponibleP,descriptionP);
+                   // daoAdmin.updateProduct(Integer.parseInt(idProduit), codeMa, codeProd,
+                     //       prixA, stockageP,
+                       //     margeeP, disponibleP.toUpperCase(),descriptionP);
+                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
             }
             switch(actionCA){
                 case "caClient": // Cas du chiffre d'affaire par client
@@ -298,6 +307,26 @@ try {
     }// </editor-fold>
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
