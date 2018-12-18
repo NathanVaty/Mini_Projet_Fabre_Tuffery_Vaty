@@ -5,7 +5,6 @@
  */
 package controller;
 
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import entity.ListCA;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -57,57 +56,58 @@ public class AdminController extends HttpServlet {
         String descproduit = request.getParameter("descProd");
         List<ListCA> resultCa = new LinkedList<>();
         
+        request.setAttribute("produit", idProduit);
+        
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
-        try {    
-	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
-	    if (action != null) {
-                if(action.equals("ADD")){
-                    request.setAttribute("codeFabricant",codeFabricant);
-                    request.setAttribute("codeProduit",codeProduit);
-                    request.setAttribute("prixAchat", prixAchat);
-                    request.setAttribute("stock",stock);
-                    request.setAttribute("marge",marge);
-                    request.setAttribute("dispo",dispo);
-                    request.setAttribute("descproduit", descproduit);
-                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, Double.parseDouble(prixAchat), Integer.parseInt(stock), Double.parseDouble(marge),dispo, descproduit);
-                    request.setAttribute("message","Code " + idProduit + " Ajouté");
-                    request.setAttribute("listProduct", daoAdmin.listAllProduct());
-                }// Requête d'ajout (vient du formulaire de saisie)
-                if(action.equals("DELETE")){
-                    try {
-                       request.setAttribute("idProduit",idProduit );
-                       daoAdmin.deleteProduct(Integer.parseInt(idProduit));
-                       request.setAttribute("message", "Code " + idProduit + " Supprimé");
-                       request.setAttribute("listProduct", daoAdmin.listAllProduct());									
-                    } catch (SQLIntegrityConstraintViolationException e) {
-                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
-                    }
-                }
-            }
-            if (actionCA != null){
-                if(typeCA.equals("caClient")){
-                    //resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
-                    request.setAttribute("listCA",daoAdmin.CAfromClient(dateDeb, dateFin));
-                     //json = new JSONObject(resultCa);
-                }
-                if(typeCA.equals("caZoneGeo")){
-                    //resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
-                    request.setAttribute("listCA",daoAdmin.CAofZoneGeo(dateDeb, dateFin));
-                    //json = new JSONObject(resultCa);
-                }
-                if(typeCA.equals("caCat")){
-                    //resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
-                    request.setAttribute("listCA",daoAdmin.CAofCategorie(dateDeb, dateFin));
-                    //json = new JSONObject(resultCa);
-                }
-            }
-	} catch (Exception ex) {
-            request.setAttribute("message", ex.getMessage());
-	} finally {
-	}
-        // On continue vers la page JSP sélectionnée
-	request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
+//        try {    
+//	    request.setAttribute("listProduct", daoAdmin.listAllProduct());
+//	    switch (action) {
+//	    case "ADD": // Requête d'ajout (vient du formulaire de saisie)
+//		request.setAttribute("codeF",Integer.parseInt(codeFabricant));
+//                    request.setAttribute("codeP",codeProduit);
+//                    request.setAttribute("prixA", Float.parseFloat(prixAchat));
+//                    request.setAttribute("stock",Integer.parseInt(stock));
+//                    request.setAttribute("marge",Float.parseFloat(marge));
+//                    request.setAttribute("dispo", dispo.toUpperCase());
+//                    request.setAttribute("desc",descproduit);
+//                    daoAdmin.insertProduct(Integer.parseInt(codeFabricant), codeProduit, 
+//                            Double.parseDouble(prixAchat), Integer.parseInt(stock), 
+//                            Double.parseDouble(marge), dispo.toUpperCase(), descproduit);
+//                break;
+//            case "DELETE": // Requête de suppression (vient du lien hypertexte)
+//		try {
+//                       daoAdmin.deleteProduct(Integer.parseInt(idProduit));
+//                       request.setAttribute("message", "Code " + idProduit + " Supprimé");
+//                       request.setAttribute("listProduct", daoAdmin.listAllProduct());									
+//                    } catch (SQLIntegrityConstraintViolationException e) {
+//                        request.setAttribute("message", "Impossible de supprimer " + idProduit + ", ce code est utilisé.");
+//                    }
+//                }
+//            }
+//            if (actionCA != null){
+//                if(typeCA.equals("caClient")){
+//                    //resultCa = daoAdmin.CAfromClient(dateDeb, dateFin);
+//                    request.setAttribute("listCA",daoAdmin.CAfromClient(dateDeb, dateFin));
+//                     //json = new JSONObject(resultCa);
+//                }
+//                if(typeCA.equals("caZoneGeo")){
+//                    //resultCa = daoAdmin.CAofZoneGeo(dateDeb, dateFin);
+//                    request.setAttribute("listCA",daoAdmin.CAofZoneGeo(dateDeb, dateFin));
+//                    //json = new JSONObject(resultCa);
+//                }
+//                if(typeCA.equals("caCat")){
+//                    //resultCa = daoAdmin.CAofCategorie(dateDeb, dateFin);
+//                    request.setAttribute("listCA",daoAdmin.CAofCategorie(dateDeb, dateFin));
+//                    //json = new JSONObject(resultCa);
+//                }
+//            }
+//	} catch (Exception ex) {
+//            request.setAttribute("message", ex.getMessage());
+//	} finally {
+//	}
+//        // On continue vers la page JSP sélectionnée
+//	request.getRequestDispatcher("view/adminjsp.jsp").forward(request, response);
 
     }
 
@@ -151,6 +151,13 @@ public class AdminController extends HttpServlet {
     }// </editor-fold>
 
 }
+
+
+
+
+
+
+
 
 
 

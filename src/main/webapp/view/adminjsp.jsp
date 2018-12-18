@@ -9,16 +9,12 @@
 <%@ page import="java.util.*" %>
 <%@ page import="com.google.gson.Gson"%>
 <%@ page import="com.google.gson.JsonObject"%>
-<%
-    Gson gsonObj = new Gson();
-    List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
-%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin Le bon cote</title>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<!--        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
         // Load the Visualization API and the piechart package.
         google.load('visualization', '1.0', {
@@ -36,9 +32,6 @@
         // Create the data table.
         var data = google.visualization.arrayToDataTable([
                ['Pays', 'CA'],
-                <c:forEach items="${listCA}" var="entry">
-                       [ '${entry.key}', ${entry.value} ],
-                </c:forEach>
         ]);
 
         // Set chart options
@@ -55,10 +48,11 @@
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
     }
-</script>
+</script>-->
     </head>
     <body>
         <h1>Bievenue dans la section administrateur</h1>
+        <h2>${produit}</h2>
         <form method='GET'>
                     Id du fabricant : <input name="manuId" pattern="[0-9]{1}+" title="Un identifiant de fabricant"><br/>
                     Un code pour le produit : <input name="productCode" size="1" maxlength="2" pattern="[A-Z]{2}" title="Un code de produit"><br/>
@@ -70,12 +64,18 @@
                         <option value="false">Pas Disponible</option>
                         </select><br />
                     Description du produit : <textarea name="descProd" rows="3" cols="10" placeholder="Ecrivez votre description" title="une description de produit"></textarea><br/>
-                    <input type="hidden" name="action" value="ADD">
-                    <input type="submit" value="Ajouter">
+                    <input type="submit" name="action" value="ADDP">
                     
         </form>
         <%--  On montre un éventuel message d'erreur --%>
-	<div><h4>${message}</h4></div>
+	<div><h4>${codeF}</h4></div>
+        <div><h4>${codeP}</h4></div>
+        <div><h4>${prixA}</h4></div>
+        <div><h4>${stock}</h4></div>
+        <div><h4>${marge}</h4></div>
+        <div><h4>${dispo}</h4></div>
+        <div><h4>${desc}</h4></div>
+        <div><h4>${message}</h4></div>
         <%--  On montre La liste des produits --%>
         <div>
             <table border="1">
@@ -90,7 +90,7 @@
                         <td>${list.markup}</td>
                         <td>${list.available}</td>
                         <td>${list.desc}</td>
-                        <td><a href="?action=DELETE&idProduit=${list.productId}">delete</a></td>
+                        <td><a href="?action=DELETEP&idProduit=${list.productId}" >delete</a></td>
                     </tr>
                 </c:forEach> 
             </table> 

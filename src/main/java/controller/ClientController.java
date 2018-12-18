@@ -76,7 +76,7 @@ String reportDate = df.format(today);
             if(action != null) {
                 if (action.equals("DELETE")) {
                     daoclient.deletePurchaseOrder(Integer.parseInt(code));
-                    listePO = daoclient.listeOrder(2);
+//                    listePO = daoclient.listeOrder(2);
                 } else if (action.equals("ADD")) {
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     request.getRequestDispatcher("view/addPo.jsp").forward(request, response);
@@ -95,7 +95,7 @@ String reportDate = df.format(today);
                 }
             }
             
-            request.setAttribute("listePO", listePO);
+            //request.setAttribute("listePO", listePO);
 	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
             
         } catch (Exception ex) {
@@ -158,6 +158,8 @@ String reportDate = df.format(today);
     }// </editor-fold>
 
 }
+
+
 
 
 
