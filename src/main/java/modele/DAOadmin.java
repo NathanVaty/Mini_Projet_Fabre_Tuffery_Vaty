@@ -138,6 +138,44 @@ public class DAOadmin {
         return chiffreAff;
     }
     
+    /**
+     * Ajouter un produit
+     * @param manufactID
+     * @param prodCode
+     * @param prodCost
+     * @param quantite
+     * @param markup
+     * @param dispo
+     * @param desc
+     */
+   public void insertProduct(int manufactID,String prodCode, float prodCost,
+                    int quantite, float markup, String dispo, String desc) {
+        String sql = "INSERT INTO PRODUCT "
+                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+         try (Connection connection = myDataSource.getConnection();
+                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
+             // On définit la valeur de paramètre
+            
+             //Génération automatique du prochain ordeNum
+             int productID = getProductKey();
+             
+             discountStatement.setInt(1, productID);
+             discountStatement.setInt(2, manufactID);
+             discountStatement.setString(3, prodCode);
+             discountStatement.setFloat(4, prodCost);
+             discountStatement.setInt(5, quantite);
+             discountStatement.setFloat(6, markup);
+             discountStatement.setString(7, dispo);
+             discountStatement.setString(8, desc);
+             
+             
+             // On ajoute le code discount avec une requete
+             discountStatement.executeUpdate();
+         } catch (SQLException ex) {
+            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+         }
+    }
+    
     public int getProductKey() {
         int key = 0;
         String sql = "SELECT MAX(PRODUCT_ID) AS Cle FROM PRODUCT";
@@ -154,48 +192,6 @@ public class DAOadmin {
     }
     
     /**
-     * Ajouter un produit
-     * @param manufactID
-     * @param prodCode
-     * @param prodCost
-     * @param quantite
-     * @param markup
-     * @param dispo
-     * @param desc
-     */
-   public void insertProduct(int manufactID,String prodCode, double prodCost,
-                    int quantite, double markup, String dispo, String desc) {
-        String sql = "INSERT INTO PRODUCT "
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-         try (Connection connection = myDataSource.getConnection();
-                 PreparedStatement discountStatement = connection.prepareStatement(sql)  ){
-             // On définit la valeur de paramètre
-            
-             //Génération automatique du prochain ordeNum
-             int productID = getProductKey();
-             
-             discountStatement.setInt(1, productID);
-             discountStatement.setInt(2, manufactID);
-             discountStatement.setString(3, prodCode);
-             discountStatement.setDouble(4, prodCost);
-             discountStatement.setInt(5, quantite);
-             discountStatement.setDouble(6, markup);
-             discountStatement.setString(7, dispo);
-             discountStatement.setString(8, desc);
-             
-             
-             // On ajoute le code discount avec une requete
-             discountStatement.executeUpdate();
-             connection.commit();
-             connection.close();
-         } catch (SQLException ex) {
-            Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
-         }
-    }
-    
-    
-    
-    /**
      * Modifier un produit
      * @param productID
      * @param manufactID
@@ -206,8 +202,8 @@ public class DAOadmin {
      * @param dispo
      * @param desc
      */
-    public void updateProduct(int productID, int manufactID,String prodCode, double prodCost,
-                    int quantite, double markup, String dispo, String desc) {
+    public void updateProduct(int productID, int manufactID,String prodCode, float prodCost,
+                    int quantite, float markup, String dispo, String desc) {
         String sql = "UPDATE PRODUCT SET MANUFACTURER_ID = ? , PRODUCT_CODE = ? , PURCHASE_COST = ?, QUANTITY_ON_HAND = ?, "
                 + " MARKUP = ?, AVAILABLE = ?, DESCRIPTION = ? "
                 + " WHERE PRODUCT_ID = ?"
@@ -217,16 +213,16 @@ public class DAOadmin {
 
              discountStatement.setInt(1, manufactID);
              discountStatement.setString(2, prodCode);
-             discountStatement.setDouble(3, prodCost);
+             discountStatement.setFloat(3, prodCost);
              discountStatement.setInt(4, quantite);
-             discountStatement.setDouble(5, markup);
+             discountStatement.setFloat(5, markup);
              discountStatement.setString(6, dispo);
              discountStatement.setString(7, desc);
              discountStatement.setInt(8, productID);
              
              
              // On ajoute le code discount avec une requete
-             discountStatement.execute();
+             discountStatement.executeUpdate();
          } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
@@ -248,8 +244,6 @@ public class DAOadmin {
 			
                         // On execute la requete
 			stmt.executeUpdate();
-                        connection.commit();
-                        connection.close();
 		}  catch (SQLException ex) {
                     System.out.println(ex.getMessage());
                     Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
@@ -353,4 +347,18 @@ public class DAOadmin {
         return result;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

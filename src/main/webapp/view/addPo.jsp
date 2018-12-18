@@ -31,8 +31,7 @@
             
             
             Quantite : <input name="quantite" pattern="[0-9]{1}+" title="Le stock de produit"><br/>
-            <input type="hidden" name="action" value="ADDPO">
-            <input type="submit" value="Ajouter">
+            <input type="submit" name="action" value="ADDPO">
         </form>
         
     </body>
