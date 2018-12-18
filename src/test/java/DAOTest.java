@@ -160,7 +160,7 @@ public class DAOTest {
 	        result = rs.getInt("PRODUCT_ID");
 	    }
             
-//            myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, "TRUE", "Produit Test Update");
+           // myDaoAdmin.updateProduct(result, 19985678, "SW", 2000.0, 10, 10.5, "TRUE", "Produit Test Update");
         } catch (Exception e) {
             System.out.println("Erreur sur la modification d'un produit");
             fail();

@@ -59,43 +59,63 @@ Date today = Calendar.getInstance().getTime();
 // representation of a date with the defined format.
 String reportDate = df.format(today);
 
-        
+        //Parametre permettant de savoir ou veut aller l'utilisateur
         String action = request.getParameter("action");
+        
+        //Parametre permettant de savoir quel utilisateur est connecté
         int customerId = (request.getParameter("CustomerID") == null) ? -1 : Integer.parseInt(request.getParameter("CustomerID"));
+        //Lien vers le daoclient
         DAOclient daoclient = new DAOclient(DataSourceFactory.getDataSource());
         DAOadmin daoAdmin; //DAO de l'admin
         daoAdmin = new DAOadmin(DataSourceFactory.getDataSource());
+        
+        //Recupere l'id du produit renvoyé par la page jsp
         String produit = request.getParameter("produit");
+        //Recupere la quantite voulue
         String quantite = request.getParameter("quantite");
-        String code = request.getParameter("code");
+        //Recupere le code Purchase Order renvoyé par la page jsp
+        String codePO = request.getParameter("code");
+        //Liste des factures d'un client 
+        //Constante mise en parametre car gérée plus tard danas une autre classe
         List<PurchaseOrder> listePO = daoclient.listeOrder(2);
         ProductEntity leProduit;//Le produit qu'on recupera grace a la fonction getproduct
+        PurchaseOrder laFacture;//La facture qu'on recupera grace a la fonction
+        
         
         
         try { 
             if(action != null) {
                 if (action.equals("DELETE")) {
-                    daoclient.deletePurchaseOrder(Integer.parseInt(code));
+                    //Supprime une facture de la bd
+                    daoclient.deletePurchaseOrder(Integer.parseInt(codePO));
 //                    listePO = daoclient.listeOrder(2);
                 } else if (action.equals("ADD")) {
+                    //Renvoie le client vers addPo.jsp
                     request.setAttribute("listProduct", daoAdmin.listAllProduct());
                     request.getRequestDispatcher("view/addPo.jsp").forward(request, response);
                 } else if(action.equals("ADDPO")){
-                    
+                    //Ajoute une facture a a bd
                     leProduit = daoAdmin.getProduct(Integer.parseInt(produit));
                     daoclient.addPurchaseOrder(customerId ,Integer.parseInt(produit),Integer.parseInt(quantite), leProduit.getCostProduct() , reportDate,
                                  reportDate, null);
                     
                     
-                } else if (action.equals("UPDATEPO")) {	
+                } else if (action.equals("UPDATEPO")) {
+                    //Permet de renvoyer le client vers la page updatePo.jsp
+                    //Mis en commentaire car sinon on ne peut pas aceder a la page
+                    //leProduit = daoAdmin.getProduct(Integer.parseInt(produit));
+                    //laFacture = daoclient.getPurchaseOrder(Integer.parseInt(codePO));
+                    //request.setAttribute("prod", leProduit);
+                    //request.setAttribute("po", laFacture);
                     request.getRequestDispatcher("view/updatePo.jsp").forward(request, response);
                     
                 }else if (action.equals("UPDATECU")) {
+                    //Permet de renvoyer le client vers la page updatePo.jsp
                     request.getRequestDispatcher("view/updateCu.jsp").forward(request, response);
                 }
             }
             
-            //request.setAttribute("listePO", listePO);
+            request.setAttribute("listePO", listePO);
 	    request.getRequestDispatcher("view/clientjsp.jsp").forward(request, response);
             
         } catch (Exception ex) {
